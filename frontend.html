@@ -150,3 +150,172 @@
   </script>
 </body>
 </html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KrishiSetu | Login & Onboarding Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', 'Noto Sans Devanagari', sans-serif; background-color: #FAFAF7; color: #1C241E; }
+    .container { max-width: 760px; margin: 40px auto; padding: 20px; }
+    .card { background: #FFF; border-radius: 24px; padding: 36px; border: 1px solid #D9DFD7; box-shadow: 0 20px 40px rgba(27,94,59,0.1); }
+    .form-group { margin-bottom: 20px; }
+    .form-input { width: 100%; padding: 14px; border: 1.5px solid #D9DFD7; border-radius: 12px; }
+    .btn-submit { width: 100%; background: #F2B01E; color: #211b06; font-weight: 800; padding: 16px; border-radius: 99px; border: none; font-size: 1.1rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1 id="registerTitle" style="text-align: center; margin-bottom: 8px;">Join KrishiSetu Platform</h1>
+      <p style="text-align: center; color: #536458; margin-bottom: 24px;">Complete your onboarding & KYC verification</p>
+
+      <form id="registerForm" onsubmit="executeRegistrationAndNavigate(event)">
+        <div class="form-group">
+          <label style="font-weight: 700;">Full Name / Organization</label>
+          <input type="text" class="form-input" id="regName" value="Ramesh Patil" required>
+        </div>
+        <div class="form-group">
+          <label style="font-weight: 700;">Select Profile Role</label>
+          <select class="form-input" id="regRole">
+            <option value="farmer">🧑‍🌾 Farmer / FPO</option>
+            <option value="buyer">🏬 Buyer (Trader / Wholesaler)</option>
+            <option value="service-provider">🚚 Service Provider</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label style="font-weight: 700;">Upload KYC Document (Aadhaar / GST / FPO License)</label>
+          <input type="file" class="form-input" id="kycFile" accept="image/*,.pdf">
+        </div>
+        <button type="submit" class="btn-submit" id="btnFinishReg">Complete Registration & Enter Dashboard →</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function executeRegistrationAndNavigate(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const role = document.getElementById('regRole').value || 'farmer';
+      const name = document.getElementById('regName').value || 'Ramesh Patil';
+      
+      const btn = document.getElementById('btnFinishReg');
+      btn.disabled = true;
+      btn.innerHTML = '⌛ Entering Dashboard...';
+
+      localStorage.setItem('krishisetu_user', JSON.stringify({ role, name, isLoggedIn: true }));
+      
+      try {
+        fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, role, kycStatus: 'verified' })
+        });
+      } catch(err){}
+
+      setTimeout(() => {
+        window.location.href = `/dashboard?role=${role}`;
+      }, 150);
+    }
+  </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KrishiSetu | Smart Market Intelligence & Role Dashboard</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="min-h-screen bg-[#FAFAF7]">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const params = new URLSearchParams(window.location.search);
+      const initialRole = params.get('role') || 'farmer';
+
+      const [currentRole, setCurrentRole] = useState(initialRole);
+      const [selectedCrop, setSelectedCrop] = useState('Onion (Nashik Red)');
+      const [forecastData, setForecastData] = useState(null);
+      const [mandiComparisons, setMandiComparisons] = useState([]);
+
+      useEffect(() => {
+        fetch('/api/market-data')
+          .then(res => res.json())
+          .then(data => setMandiComparisons(data.mandiComparisons || []));
+
+        fetch(`/api/price-forecast?crop=${encodeURIComponent(selectedCrop)}`)
+          .then(res => res.json())
+          .then(data => setForecastData(data.forecast));
+      }, [selectedCrop]);
+
+      const renderSvgChart = () => {
+        if (!forecastData || !forecastData.prices) return null;
+        const prices = forecastData.prices;
+        const minP = Math.min(...prices);
+        const maxP = Math.max(...prices);
+        const rangeP = (maxP - minP) || 1;
+
+        const points = prices.map((p, idx) => ({
+          cx: 35 + idx * 72,
+          cy: 120 - ((p - minP) / rangeP) * 90,
+          price: p,
+          day: forecastData.days[idx]
+        }));
+
+        const pathD = `M ${points.map(pt => `${pt.cx} ${pt.cy}`).join(' L ')}`;
+
+        return (
+          <svg class="w-full h-48 overflow-visible" viewBox="0 0 500 150">
+            <line x1="10" y1="30" x2="490" y2="30" stroke="#E5E7EB" stroke-dasharray="4" />
+            <line x1="10" y1="120" x2="490" y2="120" stroke="#E5E7EB" stroke-dasharray="4" />
+            <path d={pathD} fill="none" stroke="#1B5E3B" stroke-width="4.5" />
+            {points.map((pt, idx) => (
+              <g key={idx}>
+                <circle cx={pt.cx} cy={pt.cy} r="6" fill="#1B5E3B" stroke="#FFF" stroke-width="2" />
+                <text x={pt.cx} y={pt.cy - 12} font-size="11" font-weight="800" text-anchor="middle">₹{pt.price}</text>
+              </g>
+            ))}
+          </svg>
+        );
+      };
+
+      return (
+        <div class="max-w-7xl mx-auto p-6 space-y-8">
+          <header class="flex justify-between items-center bg-white p-6 rounded-3xl border shadow-sm">
+            <h1 class="text-2xl font-black text-agri-600">🌾 KrishiSetu Market Dashboard</h1>
+            <div class="flex gap-2">
+              <button onClick={() => setCurrentRole('farmer')} class={`px-4 py-2 rounded-full font-bold ${currentRole==='farmer'?'bg-agri-600 text-white':'bg-gray-100'}`}>🧑‍🌾 Farmer</button>
+              <button onClick={() => setCurrentRole('buyer')} class={`px-4 py-2 rounded-full font-bold ${currentRole==='buyer'?'bg-agri-600 text-white':'bg-gray-100'}`}>🏬 Buyer</button>
+            </div>
+          </header>
+
+          <div class="bg-white p-8 rounded-3xl border shadow-lg space-y-6">
+            <h2 class="text-2xl font-black">🧠 AI 30-Day Price Forecast</h2>
+            {renderSvgChart()}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
