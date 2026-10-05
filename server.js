@@ -382,6 +382,7 @@ if (pathname === '/' || pathname === '/index.html') {
     const requestedPath = pathname.replace(/^\/+/, '');
     filePath = path.join(__dirname, requestedPath);
 }
+  const ext = path.extname(filePath);
   const contentType = MIME_TYPES[ext] || 'text/html; charset=utf-8';
 
   fs.readFile(filePath, (err, content) => {
