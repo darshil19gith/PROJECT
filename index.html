@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#1B5E3B">
+  <meta name="description" content="KrishiSetu - Smart Agri-Market Intelligence & Price Discovery Platform for Farmers. Compare mandis after transport and storage costs.">
+  <title>KrishiSetu | Smart Market Intelligence for Farmers</title>
+  
+  <!-- Google Fonts: Inter & Noto Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            agri: {
+              50: '#E8F7ED',
+              100: '#CBEFD6',
+              500: '#22C55E',
+              600: '#1B5E3B',
+              700: '#154B2F',
+              800: '#0F3822',
+              900: '#0A2517'
+            },
+            harvest: {
+              400: '#FCD34D',
+              500: '#F2B01E',
+              600: '#D97706'
+            },
+            earth: '#C0502D'
+          },
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Devanagari', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FAFAF7;
+      color: #1C241E;
+      font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .badge-pulse {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(217, 223, 215, 0.8);
+      box-shadow: 0 20px 40px -10px rgba(27, 94, 59, 0.12);
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .animate-marquee {
+      display: inline-flex;
+      white-space: nowrap;
+      animation: marquee 25s linear infinite;
+    }
+
+    .animate-marquee:hover {
+      animation-play-state: paused;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#FAFAF7] text-gray-900">
+
+  <!-- HEADER NAV -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3 text-2xl font-black text-agri-600 tracking-tight hover:opacity-90 transition">
+        <span class="text-3xl">🌾</span>
+        <span>KrishiSetu</span>
+      </a>
+
+      <!-- Language Selector & Auth CTAs -->
+      <div class="flex items-center gap-3 sm:gap-4">
+        
+        <!-- Audio Guidance Assistant Button -->
+        <button onclick="speakMarketAdvice()" title="Listen to Market Advisory" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-agri-300 bg-agri-50 hover:bg-agri-100 text-agri-700 text-xs font-bold transition shadow-sm">
+          <span>🔊</span>
+          <span id="audioBtnLabel" class="hidden sm:inline">Listen Audio</span>
+        </button>
+
+        <!-- Language Switcher Pill (EN, HI, MR) -->
+        <div class="flex bg-gray-100 p-1 rounded-full border border-gray-200 text-xs font-bold">
+          <button id="langEnBtn" onclick="switchLanguage('en')" class="px-3 py-1.5 rounded-full transition bg-agri-600 text-white shadow">EN</button>
+          <button id="langHiBtn" onclick="switchLanguage('hi')" class="px-3 py-1.5 rounded-full transition text-gray-600 hover:text-gray-900">हिंदी</button>
+          <button id="langMrBtn" onclick="switchLanguage('mr')" class="px-3 py-1.5 rounded-full transition text-gray-600 hover:text-gray-900">मराठी</button>
+        </div>
+
+        <a href="/login" id="navLoginLink" class="hidden sm:inline-flex px-4 py-2 rounded-full text-sm font-bold text-gray-700 hover:text-agri-600 transition">
+          Log In
+        </a>
+
+        <a href="/login?mode=register" id="navRegisterBtn" class="px-5 py-2.5 rounded-full text-sm font-extrabold text-white bg-agri-600 hover:bg-agri-700 shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5">
+          Register →
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- LIVE TICKER MARQUEE BAR -->
+  <div class="bg-agri-900 text-white py-2 overflow-hidden border-b border-agri-800 text-xs font-semibold">
+    <div class="animate-marquee flex gap-8 items-center">
+      <span class="flex items-center gap-2 text-harvest-400">🔥 <span id="tickerTitleTag">LIVE AGMARKNET MANDI TICKER:</span></span>
+      <span>🧅 Onion (Lasalgaon): <strong class="text-green-400">₹2,450/qtl ▲ (+4.2%)</strong></span>
+      <span>🍅 Tomato (Hybrid): <strong class="text-red-400">₹1,800/qtl ▼ (-2.8%)</strong></span>
+      <span>🌱 Soybean (Yellow): <strong class="text-green-400">₹4,650/qtl ▲ (+1.5%)</strong></span>
+      <span>🌾 Wheat (Sharbati): <strong class="text-yellow-300">₹2,850/qtl ➖ (0.0%)</strong></span>
+      <span class="text-gray-400">|</span>
+      <span>🧅 Onion (Lasalgaon): <strong class="text-green-400">₹2,450/qtl ▲ (+4.2%)</strong></span>
+      <span>🍅 Tomato (Hybrid): <strong class="text-red-400">₹1,800/qtl ▼ (-2.8%)</strong></span>
+      <span>🌱 Soybean (Yellow): <strong class="text-green-400">₹4,650/qtl ▲ (+1.5%)</strong></span>
+      <span>🌾 Wheat (Sharbati): <strong class="text-yellow-300">₹2,850/qtl ➖ (0.0%)</strong></span>
+    </div>
+  </div>
+
+  <!-- SYSTEM WORKFLOW STEPPER BAR (SIH 2026 Pipeline) -->
+  <div class="bg-gray-900 text-white py-3 border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs font-bold overflow-x-auto gap-4">
+      <span class="text-harvest-400 flex items-center gap-1 shrink-0" id="step1Text">1. Entry & Role Selection 📍</span>
+      <span class="text-gray-600">➔</span>
+      <span class="text-gray-400 shrink-0" id="step2Text">2. Onboarding & KYC</span>
+      <span class="text-gray-600">➔</span>
+      <span class="text-gray-400 shrink-0" id="step3Text">3. AI Market Intelligence (Sell or Hold?)</span>
+      <span class="text-gray-600">➔</span>
+      <span class="text-gray-400 shrink-0" id="step4Text">4. Transaction Pipeline & Delivery Settlement</span>
+    </div>
+  </div>
+
+  <main class="flex-1 space-y-16 py-8 sm:py-12">
+
+    <!-- HERO SECTION -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Hero Copy Column (Left 7 Cols) -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 bg-agri-50 text-agri-700 border border-agri-200 px-4 py-1.5 rounded-full text-xs font-extrabold tracking-wide uppercase">
+            <span>🌱</span>
+            <span id="heroPillText">SIH 2026 Problem Statement ID 26132</span>
+          </div>
+
+          <h1 id="heroTitleText" class="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 tracking-tight leading-none">
+            Strengthening market linkages & <span class="text-agri-600 underline underline-offset-8 decoration-agri-500/40">price discovery</span> for farmers.
+          </h1>
+
+          <p id="heroSubtext" class="text-lg sm:text-xl text-gray-600 leading-relaxed max-w-2xl font-medium">
+            KrishiSetu calculates true net realization after transport freight & storage fees, predicting whether to SELL NOW or HOLD IN WAREHOUSE for maximum net profit.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <a href="/login?mode=register" id="heroStartBtn" class="bg-harvest-500 hover:bg-harvest-600 text-harvest-900 font-extrabold px-8 py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 flex items-center gap-2">
+              🚀 1. Start Role Selection & Onboarding →
+            </a>
+            <a href="#roleSection" id="heroExploreBtn" class="bg-white border-2 border-gray-300 hover:border-agri-600 text-gray-800 font-bold px-6 py-4 rounded-full text-base transition">
+              Choose User Role Below
+            </a>
+          </div>
+
+          <!-- Key Micro Feature Badges -->
+          <div class="flex flex-wrap gap-3 pt-4 text-xs font-bold text-gray-600">
+            <span class="bg-white px-3.5 py-2 rounded-full border border-gray-200 shadow-sm flex items-center gap-1.5">
+              🗣️ <span id="chipVoice">Voice & Audio Assistant (EN, HI, MR)</span>
+            </span>
+            <span class="bg-white px-3.5 py-2 rounded-full border border-gray-200 shadow-sm flex items-center gap-1.5">
+              🚚 <span id="chipGps">Real-time GPS Fleet Tracking</span>
+            </span>
+            <span class="bg-white px-3.5 py-2 rounded-full border border-gray-200 shadow-sm flex items-center gap-1.5">
+              📜 <span id="chipCert">Cryptographic Digital Quality Certs</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Dynamic Live Price Card (Right 5 Cols) -->
+        <div class="lg:col-span-5">
+          <div class="glass-card rounded-3xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
+            
+            <!-- Live Ticker Bar -->
+            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-black bg-agri-50 text-agri-700 border border-agri-300">
+                <span class="w-2 h-2 rounded-full bg-agri-500 badge-pulse"></span>
+                <span id="tickerLiveTag">LIVE AGMARKNET FEED</span>
+              </div>
+              <span class="text-xs font-bold text-gray-400" id="tickerHubText">📍 Nashik APMC Hub</span>
+            </div>
+
+            <!-- Crop Tabs -->
+            <div class="grid grid-cols-4 bg-gray-100 p-1.5 rounded-full border border-gray-200 gap-1">
+              <button id="cropTabOnion" onclick="selectLiveCrop('onion')" class="py-1.5 rounded-full text-xs font-extrabold transition bg-agri-600 text-white shadow">🧅 Onion</button>
+              <button id="cropTabTomato" onclick="selectLiveCrop('tomato')" class="py-1.5 rounded-full text-xs font-extrabold transition text-gray-600 hover:text-gray-900">🍅 Tomato</button>
+              <button id="cropTabSoybean" onclick="selectLiveCrop('soybean')" class="py-1.5 rounded-full text-xs font-extrabold transition text-gray-600 hover:text-gray-900">🌱 Soybean</button>
+              <button id="cropTabWheat" onclick="selectLiveCrop('wheat')" class="py-1.5 rounded-full text-xs font-extrabold transition text-gray-600 hover:text-gray-900">🌾 Wheat</button>
+            </div>
+
+            <!-- AI Traffic-Light Verdict Badge -->
+            <div id="verdictBadgeBox" class="bg-amber-100 border border-amber-300 text-amber-900 p-3.5 rounded-2xl flex items-center justify-between shadow-sm">
+              <span class="text-xs font-black tracking-wide" id="verdictTagText">⏳ AI RECOMMENDATION: HOLD FOR 20 DAYS</span>
+              <span class="text-xs font-bold px-2.5 py-1 bg-white text-amber-800 rounded-full shadow-xs" id="verdictGainText">+11.6% Profit</span>
+            </div>
+
+            <!-- Dynamic Net Price Display -->
+            <div class="space-y-1">
+              <div class="text-xs font-black text-gray-400 uppercase tracking-wider" id="netPriceLabel">EXPECTED NET BANK REALIZATION</div>
+              <div class="flex items-baseline justify-between">
+                <div class="text-4xl font-black text-agri-600 tracking-tight">
+                  <span id="liveNetPrice">₹2,450</span> <span class="text-base font-bold text-gray-500" id="unitText">/ quintal</span>
+                </div>
+                <span class="text-xs font-black px-3 py-1 bg-agri-100 text-agri-800 rounded-full" id="liveTrendText">▲ +4.2% Today</span>
+              </div>
+            </div>
+
+            <!-- SVG Sparkline Graph -->
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-200 space-y-2">
+              <div class="flex justify-between text-[11px] font-bold text-gray-500">
+                <span id="sparklineLabel">7-Day APMC Price Trend (Lasalgaon)</span>
+                <span class="text-agri-600 font-extrabold" id="sparklineArrivals">14,200 qtl Arrivals</span>
+              </div>
+              
+              <div class="relative h-16 w-full">
+                <svg class="w-full h-full overflow-visible" viewBox="0 0 300 60">
+                  <path id="sparklinePath" d="M 10 45 Q 60 40, 100 30 T 180 20 T 290 10" fill="none" stroke="#22C55E" stroke-width="3" />
+                  <circle id="sparklineDot" cx="290" cy="10" r="4" fill="#1B5E3B" stroke="#FFF" stroke-width="2" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Deduction Breakdown Box -->
+            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 space-y-2 text-xs font-bold">
+              <div class="flex justify-between text-gray-700">
+                <span id="grossLabel">Gross APMC Mandi Price:</span>
+                <span class="font-extrabold text-gray-900" id="liveGrossPrice">₹2,510/qtl</span>
+              </div>
+              <div class="flex justify-between text-earth">
+                <span id="transportLabel">Transport Freight:</span>
+                <span class="font-extrabold" id="liveTransportDeduction">-₹60/qtl</span>
+              </div>
+              <div class="flex justify-between text-earth">
+                <span id="storageLabel">Storage / Moisture Loss:</span>
+                <span class="font-extrabold" id="liveStorageDeduction">-₹0/qtl</span>
+              </div>
+            </div>
+
+            <!-- CTA to Explore Full Intelligence -->
+            <a href="/dashboard?role=farmer" id="cardCtaBtn" class="w-full bg-agri-600 hover:bg-agri-700 text-white font-extrabold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm transition transform hover:-translate-y-0.5">
+              <span>👉 Open Full Market AI & Forecasting →</span>
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STEP 1 B: ROLE SELECTION SECTION -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8" id="roleSection">
+      <div class="bg-white rounded-3xl p-8 sm:p-12 border border-gray-200 shadow-xl space-y-8">
+        
+        <div class="text-center space-y-2 max-w-2xl mx-auto">
+          <h2 class="text-3xl font-black text-gray-900" id="roleHeaderTitle">Select Your Profile Category</h2>
+          <p class="text-base text-gray-500 font-medium" id="roleHeaderSub">Step 1 of 4 in the KrishiSetu Transaction Pipeline</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Role 1: Farmer -->
+          <div id="roleCardFarmer" onclick="selectRole('farmer')" class="bg-agri-50 border-2 border-agri-600 rounded-3xl p-8 text-center cursor-pointer transition transform hover:-translate-y-1 space-y-3 shadow-md">
+            <div class="text-5xl">🧑‍🌾</div>
+            <h3 class="text-xl font-black text-gray-900" id="roleFarmerTitle">Farmer / FPO</h3>
+            <p class="text-xs text-gray-600 font-medium leading-relaxed" id="roleFarmerDesc">Discover net prices, AI sell or hold advice, book storage & publish crop lots.</p>
+          </div>
+
+          <!-- Role 2: Buyer -->
+          <div id="roleCardBuyer" onclick="selectRole('buyer')" class="bg-gray-50 border-2 border-gray-200 rounded-3xl p-8 text-center cursor-pointer transition transform hover:-translate-y-1 space-y-3 hover:border-agri-500">
+            <div class="text-5xl">🏬</div>
+            <h3 class="text-xl font-black text-gray-900" id="roleBuyerTitle">Enterprise Buyer</h3>
+            <p class="text-xs text-gray-600 font-medium leading-relaxed" id="roleBuyerDesc">Source verified grade produce directly from farm lots with digital contracts.</p>
+          </div>
+
+          <!-- Role 3: Service Provider -->
+          <div id="roleCardSp" onclick="selectRole('service-provider')" class="bg-gray-50 border-2 border-gray-200 rounded-3xl p-8 text-center cursor-pointer transition transform hover:-translate-y-1 space-y-3 hover:border-agri-500">
+            <div class="text-5xl">🚚</div>
+            <h3 class="text-xl font-black text-gray-900" id="roleSpTitle">Service Provider</h3>
+            <p class="text-xs text-gray-600 font-medium leading-relaxed" id="roleSpDesc">Storage Warehouses, GPS Logistics Telematics & Quality Inspection Labs.</p>
+          </div>
+        </div>
+
+        <div class="text-center pt-4">
+          <button onclick="proceedToOnboarding()" id="btnContinueRole" class="bg-harvest-500 hover:bg-harvest-600 text-harvest-900 font-extrabold px-10 py-4 rounded-full text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
+            Proceed to Step 2: Onboarding & KYC →
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-gray-200 py-8 text-center text-xs font-bold text-gray-400">
+    Smart India Hackathon 2026 • Team Code Catalyst (ID 118692) • Problem Statement ID 26132
+  </footer>
+
+  <!-- MULTILINGUAL TRANSLATION ENGINE & DYNAMIC CROP DATA -->
+  <script>
+    const translations = {
+      en: {
+        heroPillText: "SIH 2026 Problem Statement ID 26132",
+        heroTitleText: "Strengthening market linkages & price discovery for farmers.",
+        heroSubtext: "KrishiSetu calculates true net realization after transport freight & storage fees, predicting whether to SELL NOW or HOLD IN WAREHOUSE for maximum net profit.",
+        heroStartBtn: "🚀 1. Start Role Selection & Onboarding →",
+        heroExploreBtn: "Choose User Role Below",
+        chipVoice: "Voice & Audio Assistant (EN, HI, MR)",
+        chipGps: "Real-time GPS Fleet Tracking",
+        chipCert: "Cryptographic Digital Quality Certs",
+        tickerTitleTag: "LIVE AGMARKNET MANDI TICKER:",
+        tickerLiveTag: "LIVE AGMARKNET FEED",
+        tickerHubText: "📍 Nashik APMC Hub",
+        netPriceLabel: "EXPECTED NET BANK REALIZATION",
+        sparklineLabel: "7-Day APMC Price Trend (Lasalgaon)",
+        grossLabel: "Gross APMC Mandi Price:",
+        transportLabel: "Transport Freight:",
+        storageLabel: "Storage / Moisture Loss:",
+        cardCtaBtn: "👉 Open Full Market AI & Forecasting →",
+        roleHeaderTitle: "Select Your Profile Category",
+        roleHeaderSub: "Step 1 of 4 in the KrishiSetu Transaction Pipeline",
+        roleFarmerTitle: "Farmer / FPO",
+        roleFarmerDesc: "Discover net prices, AI sell or hold advice, book storage & publish crop lots.",
+        roleBuyerTitle: "Enterprise Buyer",
+        roleBuyerDesc: "Source verified grade produce directly from farm lots with digital contracts.",
+        roleSpTitle: "Service Provider",
+        roleSpDesc: "Storage Warehouses, GPS Logistics Telematics & Quality Inspection Labs.",
+        btnContinueRole: "Proceed to Step 2: Onboarding & KYC →",
+        navLoginLink: "Log In",
+        navRegisterBtn: "Register →",
+        audioBtnLabel: "Listen Audio",
+        unitText: "/ quintal",
+        step1Text: "1. Entry & Role Selection 📍",
+        step2Text: "2. Onboarding & KYC",
+        step3Text: "3. AI Market Intelligence (Sell or Hold?)",
+        step4Text: "4. Transaction Pipeline & Delivery Settlement",
+        audioIntro: "Welcome to KrishiSetu. Current recommendation for selected crop:"
+      },
+      hi: {
+        heroPillText: "स्मार्ट इंडिया हैकाथॉन 2026 समस्या 26132",
+        heroTitleText: "किसानों के लिए बाजार लिंक और मूल्य खोज को मजबूत करना।",
+        heroSubtext: "कृषिसितु परिवहन और भंडारण शुल्क घटाकर असली शुद्ध आय की गणना करता है और बताता है: अभी बेचें या गोदाम में रखें।",
+        heroStartBtn: "🚀 1. रोल चयन और ऑनबोर्डिंग शुरू करें →",
+        heroExploreBtn: "नीचे अपनी भूमिका चुनें",
+        chipVoice: "आवाज और भाषण सहायक (हिंदी, मराठी, अंग्रेजी)",
+        chipGps: "लाइव जीपीएस बेड़ा ट्रैकिंग",
+        chipCert: "डिजिटल गुणवत्ता प्रमाणपत्र",
+        tickerTitleTag: "लाइव एगमार्कनेट मंडी भाव टिकर:",
+        tickerLiveTag: "लाइव एगमार्कनेट फीड",
+        tickerHubText: "📍 नासिक एपीएमसी मंडी",
+        netPriceLabel: "बैंक खाते में अपेक्षित शुद्ध राशि",
+        sparklineLabel: "7-दिवसीय मंडी मूल्य रुझान (लासलगांव)",
+        grossLabel: "सकल मंडी भाव:",
+        transportLabel: "परिवहन भाड़ा:",
+        storageLabel: "भंडारण / नमी नुकसान:",
+        cardCtaBtn: "👉 पूरा बाजार एआई और पूर्वानुमान खोलें →",
+        roleHeaderTitle: "अपनी प्रोफ़ाइल श्रेणी चुनें",
+        roleHeaderSub: "कृषिसितु पाइपलाइन का चरण 1 ऑफ 4",
+        roleFarmerTitle: "किसान / एफपीओ",
+        roleFarmerDesc: "शुद्ध भाव जानें, बेचें या रखें एआई सलाह, भंडारण बुक करें और फसल बेचें।",
+        roleBuyerTitle: "थोक खरीदार",
+        roleBuyerDesc: "प्रमाणित गुणवत्ता वाली फसलें सीधे खेतों से खरीदें।",
+        roleSpTitle: "सेवा प्रदाता",
+        roleSpDesc: "भंडारण गोदाम, जीपीएस लॉजिस्टिक्स और गुणवत्ता प्रयोगशालाएं।",
+        btnContinueRole: "चरण 2 पर जाएं: ऑनबोर्डिंग और केवायसी →",
+        navLoginLink: "लॉग इन",
+        navRegisterBtn: "पंजीकरण →",
+        audioBtnLabel: "ऑडियो सुनें",
+        unitText: "/ कुंटल",
+        step1Text: "1. भूमिका चयन और प्रवेश 📍",
+        step2Text: "2. ऑनबोर्डिंग और केवायसी",
+        step3Text: "3. बाजार एआई (बेचें या रोकें?)",
+        step4Text: "4. लेनदेन और वितरण भुगतान",
+        audioIntro: "कृषिसितु में आपका स्वागत है। चुनी गई फसल के लिए वर्तमान सलाह:"
+      },
+      mr: {
+        heroPillText: "स्मार्ट इंडिया हॅकाथॉन 2026 समस्या 26132",
+        heroTitleText: "शेतकऱ्यांसाठी बाजार जोडणी आणि दर शोध मजबूत करणे.",
+        heroSubtext: "कृषिसितू वाहतूक व साठवणूक खर्च वजा करून खऱ्या निव्वळ उत्पन्नाची गणना करते आणि सल्ला देते: आता विका किंवा वखारीत ठेवा.",
+        heroStartBtn: "🚀 1. नोंदणी व भूमिका निवड सुरू करा →",
+        heroExploreBtn: "खाली भूमिका निवडा",
+        chipVoice: "आवाज व भाषा सहाय्यक (मराठी, हिंदी, इंग्रजी)",
+        chipGps: "थेट जीपीएस ट्रॅकिंग",
+        chipCert: "डिजिटल गुणवत्ता प्रमाणपत्र",
+        tickerTitleTag: "थेट ॲगमार्कनेट बाजार समिती दर:",
+        tickerLiveTag: "थेट ॲगमार्कनेट फीड",
+        tickerHubText: "📍 नाशिक बाजार समिती",
+        netPriceLabel: "बँक खात्यात मिळणारा निव्वळ भाव",
+        sparklineLabel: "७ दिवसांचा बाजार भाव कल (लासलगाव)",
+        grossLabel: "एकूण बाजार भाव:",
+        transportLabel: "वाहतूक भाडे:",
+        storageLabel: "साठवणूक / ओल नुकसान:",
+        cardCtaBtn: "👉 संपूर्ण बाजार एआई व अंदाज उघडा →",
+        roleHeaderTitle: "आपली भूमिका श्रेणी निवडा",
+        roleHeaderSub: "कृषिसितू व्यवहाराचा टप्पा १",
+        roleFarmerTitle: "शेतकरी / एफपीओ",
+        roleFarmerDesc: "निव्वळ भाव पाहा, विका किंवा साठवा सल्ला मिळवा आणि शेतमाल विका.",
+        roleBuyerTitle: "खरेदीदार",
+        roleBuyerDesc: "प्रमाणित दर्जाचा शेतमाल थेट शेतकऱ्यांकडून खरेदी करा.",
+        roleSpTitle: "सेवा पुरवठादार",
+        roleSpDesc: "वखार साठवणूक, जीपीएस वाहतूक आणि गुणवत्ता तपासणी लॅब.",
+        btnContinueRole: "टप्पा २ कडे जा: ऑनबोर्डिंग व केवायसी →",
+        navLoginLink: "लॉग इन",
+        navRegisterBtn: "नोंदणी →",
+        audioBtnLabel: "ऐका (ऑडिओ)",
+        unitText: "/ क्विंटल",
+        step1Text: "1. भूमिका निवड व प्रवेश 📍",
+        step2Text: "2. ऑनबोर्डिंग व केवायसी",
+        step3Text: "3. बाजार एआई (विका किंवा साठवा?)",
+        step4Text: "4. व्यवहार आणि पैसे हस्तांतरण",
+        audioIntro: "कृषिसितू मध्ये आपले स्वागत आहे. निवडलेल्या पिकासाठी चालू सल्ला:"
+      }
+    };
+
+    let currentLang = localStorage.getItem('krishisetu_lang') || 'en';
+    let currentRole = 'farmer';
+    let activeCropKey = 'onion';
+
+    const liveCropsData = {
+      onion: {
+        netPrice: "₹2,450",
+        grossPrice: "₹2,510/qtl",
+        transport: "-₹60/qtl",
+        storage: "-₹0/qtl",
+        trend: "▲ +4.2% Today",
+        verdict: {
+          en: "⏳ AI RECOMMENDATION: HOLD FOR 20 DAYS",
+          hi: "⏳ AI सलाह: 20 दिनों के लिए रोकें",
+          mr: "⏳ AI सल्ला: २० दिवस साठवणूक करा"
+        },
+        gain: {
+          en: "+11.6% Profit",
+          hi: "+11.6% लाभ",
+          mr: "+११.६% नफा"
+        },
+        arrivals: {
+          en: "14,200 qtl Arrivals",
+          hi: "14,200 कुंटल आवक",
+          mr: "१४,२०० क्विंटल आवक"
+        },
+        verdictBg: "bg-amber-100 border-amber-300 text-amber-900",
+        sparklinePath: "M 10 45 Q 60 40, 100 30 T 180 20 T 290 10",
+        dotCy: 10
+      },
+      tomato: {
+        netPrice: "₹1,800",
+        grossPrice: "₹1,920/qtl",
+        transport: "-₹100/qtl",
+        storage: "-₹20/qtl",
+        trend: "▼ -2.8% Today",
+        verdict: {
+          en: "⚡ AI RECOMMENDATION: SELL IMMEDIATELY",
+          hi: "⚡ AI सलाह: आज ही तुरंत बेचें",
+          mr: "⚡ AI सल्ला: आजच शेतमाल विका"
+        },
+        gain: {
+          en: "Sell Today",
+          hi: "आज ही बेचें",
+          mr: "आजच विका"
+        },
+        arrivals: {
+          en: "22,500 qtl Arrivals",
+          hi: "22,500 कुंटल आवक",
+          mr: "२२,५०० क्विंटल आवक"
+        },
+        verdictBg: "bg-agri-100 border-agri-300 text-agri-900",
+        sparklinePath: "M 10 10 Q 60 20, 100 35 T 180 45 T 290 55",
+        dotCy: 55
+      },
+      soybean: {
+        netPrice: "₹4,650",
+        grossPrice: "₹4,800/qtl",
+        transport: "-₹110/qtl",
+        storage: "-₹40/qtl",
+        trend: "▲ +1.5% Today",
+        verdict: {
+          en: "⏳ AI RECOMMENDATION: HOLD FOR 30 DAYS",
+          hi: "⏳ AI सलाह: 30 दिनों के लिए रोकें",
+          mr: "⏳ AI सल्ला: ३० दिवस साठवणूक करा"
+        },
+        gain: {
+          en: "+9.6% Profit",
+          hi: "+9.6% लाभ",
+          mr: "+९.६% नफा"
+        },
+        arrivals: {
+          en: "8,900 qtl Arrivals",
+          hi: "8,900 कुंटल आवक",
+          mr: "८,९०० क्विंटल आवक"
+        },
+        verdictBg: "bg-amber-100 border-amber-300 text-amber-900",
+        sparklinePath: "M 10 50 Q 60 35, 100 25 T 180 15 T 290 8",
+        dotCy: 8
+      },
+      wheat: {
+        netPrice: "₹2,850",
+        grossPrice: "₹2,900/qtl",
+        transport: "-₹40/qtl",
+        storage: "-₹10/qtl",
+        trend: "➖ 0.0% Today",
+        verdict: {
+          en: "⚖️ AI RECOMMENDATION: WAIT FOR APMC TENDER",
+          hi: "⚖️ AI सलाह: टेंडर नीलामी की प्रतीक्षा करें",
+          mr: "⚖️ AI सल्ला: लिलावासाठी प्रतीक्षा करा"
+        },
+        gain: {
+          en: "+1.7% Expected",
+          hi: "+1.7% संभावित",
+          mr: "+१.७% अपेक्षीत"
+        },
+        arrivals: {
+          en: "31,000 qtl Arrivals",
+          hi: "31,000 कुंटल आवक",
+          mr: "३१,००० क्विंटल आवक"
+        },
+        verdictBg: "bg-blue-100 border-blue-300 text-blue-900",
+        sparklinePath: "M 10 30 Q 60 30, 100 28 T 180 32 T 290 28",
+        dotCy: 28
+      }
+    };
+
+    function switchLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('krishisetu_lang', lang);
+      
+      document.getElementById('langEnBtn').className = `px-3 py-1.5 rounded-full transition ${lang === 'en' ? 'bg-agri-600 text-white shadow' : 'text-gray-600 hover:text-gray-900'}`;
+      document.getElementById('langHiBtn').className = `px-3 py-1.5 rounded-full transition ${lang === 'hi' ? 'bg-agri-600 text-white shadow' : 'text-gray-600 hover:text-gray-900'}`;
+      document.getElementById('langMrBtn').className = `px-3 py-1.5 rounded-full transition ${lang === 'mr' ? 'bg-agri-600 text-white shadow' : 'text-gray-600 hover:text-gray-900'}`;
+
+      const dict = translations[lang] || translations.en;
+      Object.keys(dict).forEach(key => {
+        const el = document.getElementById(key);
+        if (el) el.textContent = dict[key];
+      });
+
+      selectLiveCrop(activeCropKey);
+    }
+
+    function selectLiveCrop(cropKey) {
+      activeCropKey = cropKey;
+      const d = liveCropsData[cropKey];
+      if (!d) return;
+
+      const crops = ['onion', 'tomato', 'soybean', 'wheat'];
+      crops.forEach(c => {
+        const tabEl = document.getElementById(`cropTab${c.charAt(0).toUpperCase() + c.slice(1)}`);
+        if (tabEl) {
+          tabEl.className = `py-1.5 rounded-full text-xs font-extrabold transition ${c === cropKey ? 'bg-agri-600 text-white shadow' : 'text-gray-600 hover:text-gray-900'}`;
+        }
+      });
+
+      const lang = currentLang || 'en';
+      document.getElementById('liveNetPrice').textContent = d.netPrice;
+      document.getElementById('liveGrossPrice').textContent = d.grossPrice;
+      document.getElementById('liveTransportDeduction').textContent = d.transport;
+      document.getElementById('liveStorageDeduction').textContent = d.storage;
+      document.getElementById('liveTrendText').textContent = d.trend;
+      
+      document.getElementById('verdictTagText').textContent = d.verdict[lang] || d.verdict['en'];
+      document.getElementById('verdictGainText').textContent = d.gain[lang] || d.gain['en'];
+      document.getElementById('sparklineArrivals').textContent = d.arrivals[lang] || d.arrivals['en'];
+      
+      document.getElementById('verdictBadgeBox').className = `${d.verdictBg} p-3.5 rounded-2xl flex items-center justify-between shadow-sm`;
+      document.getElementById('sparklinePath').setAttribute('d', d.sparklinePath);
+      document.getElementById('sparklineDot').setAttribute('cy', d.dotCy);
+    }
+
+    function selectRole(role) {
+      currentRole = role;
+      document.getElementById('roleCardFarmer').className = `rounded-3xl p-8 text-center cursor-pointer transition transform hover:-translate-y-1 space-y-3 ${role === 'farmer' ? 'bg-agri-50 border-2 border-agri-600 shadow-md' : 'bg-gray-50 border-2 border-gray-200 hover:border-agri-500'}`;
+      document.getElementById('roleCardBuyer').className = `rounded-3xl p-8 text-center cursor-pointer transition transform hover:-translate-y-1 space-y-3 ${role === 'buyer' ? 'bg-agri-50 border-2 border-agri-600 shadow-md' : 'bg-gray-50 border-2 border-gray-200 hover:border-agri-500'}`;
+      document.getElementById('roleCardSp').className = `rounded-3xl p-8 text-center cursor-pointer transition transform hover:-translate-y-1 space-y-3 ${role === 'service-provider' ? 'bg-agri-50 border-2 border-agri-600 shadow-md' : 'bg-gray-50 border-2 border-gray-200 hover:border-agri-500'}`;
+    }
+
+    function proceedToOnboarding() {
+      window.location.href = `/login?role=${currentRole}&mode=register`;
+    }
+
+    function speakMarketAdvice() {
+      if (!('speechSynthesis' in window)) {
+        alert("Speech synthesis is not supported on this browser.");
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const langMap = { en: 'en-IN', hi: 'hi-IN', mr: 'mr-IN' };
+      const d = liveCropsData[activeCropKey];
+      const lang = currentLang || 'en';
+      const intro = translations[lang].audioIntro;
+      const textToSpeak = `${intro} ${d.verdict[lang]}. ${translations[lang].netPriceLabel}: ${d.netPrice}`;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      utterance.lang = langMap[lang] || 'en-IN';
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Initialize Page
+    switchLanguage(currentLang);
+    selectLiveCrop('onion');
+  </script>
+</body>
+</html>

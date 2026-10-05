@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KrishiSetu | Smart Market Intelligence & Role Dashboard</title>
+  
+  <!-- Google Fonts: Inter & Noto Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            agri: {
+              50: '#E8F7ED',
+              100: '#CBEFD6',
+              500: '#22C55E',
+              600: '#1B5E3B',
+              700: '#154B2F',
+              800: '#0F3822',
+              900: '#0A2517'
+            },
+            harvest: {
+              400: '#FCD34D',
+              500: '#F2B01E',
+              600: '#D97706'
+            },
+            earth: '#C0502D'
+          },
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Devanagari', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React 18 & Babel CDN for client-side rendering -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      background-color: #FAFAF7;
+      color: #1C241E;
+      font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+    }
+    .badge-pulse {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#FAFAF7]">
+
+  <!-- React Mount Root -->
+  <div id="root"></div>
+
+  <!-- React Components Code -->
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Multilingual Translations Dictionary (EN, HI, MR)
+    const dashboardI18n = {
+      en: {
+        farmerPortal: "Farmer & FPO Portal",
+        welcomeTitle: "Welcome, Ramesh Patil 👋",
+        welcomeSub: "Lasalgaon, Nashik • Farm ID: MH-NSK-9921 • APMC Linkage Active",
+        btnCreateLot: "🌾 Create Lot to Sell",
+        btnBookStorage: "📦 Book Storage",
+        aiForecastTitle: "🧠 AI 30-Day Price Forecast & Optimal Sell Window",
+        aiForecastSub: "Predictive Machine Learning curves based on AGMARKNET arrivals, weather & seasonal demand",
+        optimalWindowLabel: "Optimal Sell Window:",
+        aiRecommendationLabel: "AI Recommendation",
+        expPriceRise: "Expected Price Rise:",
+        storageMoistureFee: "Storage & Moisture Fee:",
+        netProfitGainLabel: "Net Profit Gain:",
+        mandiCompTitle: "🚛 Mandi Net Realization Comparator",
+        mandiCompSub: "Calculates true take-home earnings into farmer's bank account after transport freight & mandi cess deductions",
+        distFromFarm: "Distance from Farm:",
+        grossPriceLabel: "Gross APMC Price:",
+        transportFreightLabel: "Transport Freight:",
+        handlingStorageLabel: "Handling / Storage:",
+        netBankRealizationLabel: "Net Bank Realization:",
+        activeLotsTitle: "📦 Active Crop Lots & Trade Pipeline",
+        lotId: "Lot ID",
+        cropCommodity: "Crop & Commodity",
+        quantity: "Quantity",
+        expectedRate: "Expected Rate",
+        qualityGrade: "Quality Grade",
+        pipelineStatus: "Pipeline Status",
+        certificate: "Certificate",
+        viewCert: "📜 View Cert",
+        buyerPortal: "Enterprise Buyer Portal",
+        buyerSub: "GSTIN: 27AAAAA0000A1Z5 • Mumbai APMC & Direct Farm Procurement",
+        directFarmLotsTitle: "🌾 Direct Farm Lots Available for Purchase",
+        inspectCertBtn: "📜 Inspect Digital Quality Certificate",
+        makeOfferBtn: "🤝 Make Purchase Offer",
+        myOffersTitle: "📜 My Active Purchase Offers & Negotiations",
+        offeredRate: "Offered Rate:",
+        contractVal: "Total Contract Value:",
+        spHubTitle: "Agricultural Service Hub 🚚",
+        spHubSub: "Quality Verification • Cold Storage Warehousing • Bundled Logistics",
+        logisticsTab: "🚚 Logistics & GPS Track",
+        assessorTab: "🔬 Quality Assessor",
+        storageTab: "🏬 Storage Warehouse",
+        gpsTitle: "🚚 MahaTrans Real-Time GPS Fleet Tracker",
+        gpsSub: "Live GPS location monitoring, temperature sensor logs & proof of delivery (PoD)",
+        reeferTemp: "Reefer Temp:",
+        etaRemaining: "mins remaining",
+        routeProgress: "Route Progress:",
+        currentPosition: "Current Position:",
+        btnConfirmDelivery: "✅ Confirm Delivery & Finish Process",
+        qualityTitle: "🔬 Digital Quality Inspection & Grading",
+        issueCertBtn: "+ Issue Quality Certificate",
+        warehouseTitle: "🏬 Apex Warehousing Capacity Monitor",
+        totalCap: "Total Capacity",
+        currentlyBooked: "Currently Booked",
+        availSpace: "Available Space",
+        step1: "1. Landing & Role ✅",
+        step2: "2. Onboarding & KYC ✅",
+        step3: "3. AI Market Intelligence 🧠",
+        step4: "4. Quality & Buyer Offer 📜",
+        step5: "5. GPS Logistics & PoD Escrow 🚚",
+        speaking: "Speaking...",
+        voiceAdvice: "Voice Advice",
+        endModalTitle: "Proof of Delivery & Escrow Settled",
+        endModalSub: "Full system workflow successfully executed from Landing Entry to Payment Settlement.",
+        payoutLabel: "Farmer Account Payout:",
+        deliveryLocLabel: "Delivery Location:",
+        digitalTrailLabel: "Digital Audit Trail:",
+        rateExp: "Rate Your Experience (Continuous Feedback Loop)",
+        feedbackSub: "Your feedback feeds directly back into the AI Market Intelligence Model.",
+        returnHomeBtn: "🏠 Return to Landing Page",
+        viewPipelineBtn: "📊 View Active Pipeline"
+      },
+      hi: {
+        farmerPortal: "किसान एवं एफपीओ पोर्टल",
+        welcomeTitle: "स्वागत है, रमेश पाटिल 👋",
+        welcomeSub: "लासलगांव, नासिक • फार्म आईडी: MH-NSK-9921 • एपीएमसी मंडी लिंक सक्रिय",
+        btnCreateLot: "🌾 बेचने के लिए फसल दर्ज करें",
+        btnBookStorage: "📦 गोदाम भंडारण बुक करें",
+        aiForecastTitle: "🧠 AI 30-दिवसीय मूल्य पूर्वानुमान एवं बिक्री समय",
+        aiForecastSub: "एगमार्कनेट आवक, मौसम और मौसमी मांग के आधार पर मशीन लर्निंग कर्व",
+        optimalWindowLabel: "सर्वोत्तम बिक्री समय:",
+        aiRecommendationLabel: "एआई सलाह",
+        expPriceRise: "अपेक्षित मूल्य वृद्धि:",
+        storageMoistureFee: "भंडारण व नमी शुल्क:",
+        netProfitGainLabel: "शुद्ध लाभ वृद्धि:",
+        mandiCompTitle: "🚛 मंडी शुद्ध आय तुलना (नेट रियलाइजेशन)",
+        mandiCompSub: "परिवहन भाड़ा और शुल्क घटाने के बाद बैंक खाते में आने वाली असली राशि की गणना",
+        distFromFarm: "खेत से दूरी:",
+        grossPriceLabel: "सकल मंडी भाव:",
+        transportFreightLabel: "परिवहन भाड़ा:",
+        handlingStorageLabel: "भंडारण / हैंडलिंग:",
+        netBankRealizationLabel: "बैंक खाते में शुद्ध आय:",
+        activeLotsTitle: "📦 सक्रिय फसल लॉट और व्यापार पाइपलाइन",
+        lotId: "लॉट आईडी",
+        cropCommodity: "फसल और किस्म",
+        quantity: "मात्रा",
+        expectedRate: "अपेक्षित दर",
+        qualityGrade: "गुणवत्ता ग्रेड",
+        pipelineStatus: "पाइपलाइन स्थिति",
+        certificate: "प्रमाणपत्र",
+        viewCert: "📜 प्रमाण पत्र देखें",
+        buyerPortal: "थोक खरीदार पोर्टल",
+        buyerSub: "जीएसटी नंबर: 27AAAAA0000A1Z5 • मुंबई एपीएमसी और सीधे खेत से खरीद",
+        directFarmLotsTitle: "🌾 खरीद के लिए उपलब्ध सीधे खेत के लॉट",
+        inspectCertBtn: "📜 डिजिटल गुणवत्ता प्रमाणपत्र जांचें",
+        makeOfferBtn: "🤝 खरीद प्रस्ताव भेजें",
+        myOffersTitle: "📜 मेरे सक्रिय खरीद प्रस्ताव और बातचीत",
+        offeredRate: "प्रस्तावित दर:",
+        contractVal: "कुल अनुबंध मूल्य:",
+        spHubTitle: "कृषि सेवा प्रदाता केंद्र 🚚",
+        spHubSub: "गुणवत्ता सत्यापन • शीत भण्डारण गोदाम • एकीकृत लॉजिस्टिक्स",
+        logisticsTab: "🚚 लॉजिस्टिक्स और जीपीएस",
+        assessorTab: "🔬 गुणवत्ता परीक्षक",
+        storageTab: "🏬 भंडारण गोदाम",
+        gpsTitle: "🚚 महाट्रांस लाइव जीपीएस वाहन ट्रैकिंग",
+        gpsSub: "लाइव जीपीएस स्थान निगरानी, रीफर तापमान लॉग और डिलीवरी प्रमाण (PoD)",
+        reeferTemp: "रीफर तापमान:",
+        etaRemaining: "मिनट शेष",
+        routeProgress: "मार्ग प्रगति:",
+        currentPosition: "वर्तमान स्थान:",
+        btnConfirmDelivery: "✅ डिलीवरी की पुष्टि करें और प्रक्रिया पूरी करें",
+        qualityTitle: "🔬 डिजिटल गुणवत्ता निरीक्षण एवं ग्रेडिंग",
+        issueCertBtn: "+ गुणवत्ता प्रमाणपत्र जारी करें",
+        warehouseTitle: "🏬 एपेक्स गोदाम क्षमता मॉनिटर",
+        totalCap: "कुल क्षमता",
+        currentlyBooked: "वर्तमान में बुक किया गया",
+        availSpace: "उपलब्ध स्थान",
+        step1: "1. लैंडिंग और भूमिका ✅",
+        step2: "2. ऑनबोर्डिंग और केवाईसी ✅",
+        step3: "3. बाजार एआई बुद्धिमत्ता 🧠",
+        step4: "4. गुणवत्ता और खरीदार ऑफर 📜",
+        step5: "5. जीपीएस लॉजिस्टिक्स व भुगतान 🚚",
+        speaking: "बोल रहा है...",
+        voiceAdvice: "आवाज सलाह",
+        endModalTitle: "डिलीवरी का प्रमाण और एस्क्रो भुगतान जारी",
+        endModalSub: "प्रवेश पृष्ठ से लेकर भुगतान निपटान तक की संपूर्ण प्रणाली प्रक्रिया सफलतापूर्वक पूरी हुई।",
+        payoutLabel: "किसान खाता भुगतान:",
+        deliveryLocLabel: "डिलीवरी स्थान:",
+        digitalTrailLabel: "डिजिटल ऑडिट ट्रेल:",
+        rateExp: "अपने अनुभव को रेट करें (सतत फीडबैक लूप)",
+        feedbackSub: "आपकी प्रतिक्रिया सीधे एआई मार्केट इंटेलिजेंस मॉडल में फीड होती है।",
+        returnHomeBtn: "🏠 मुख्य पृष्ठ पर लौटें",
+        viewPipelineBtn: "📊 सक्रिय पाइपलाइन देखें"
+      },
+      mr: {
+        farmerPortal: "शेतकरी व एफपीओ पोर्टल",
+        welcomeTitle: "स्वागत आहे, रमेश पाटील 👋",
+        welcomeSub: "लासलगाव, नाशिक • फार्म आयडी: MH-NSK-9921 • बाजार समिती जोडणी सक्रिय",
+        btnCreateLot: "🌾 विकण्यासाठी शेतमाल नोंदवा",
+        btnBookStorage: "📦 वखार साठवणूक बुक करा",
+        aiForecastTitle: "🧠 AI ३० दिवसांचा भाव अंदाज व साठवणूक वेळ",
+        aiForecastSub: "एगमार्कनेट आवक, हवामान आणि मागणीनुसार मशीन लर्निंग अंदाज",
+        optimalWindowLabel: "योग्य विक्रीचा कालावधी:",
+        aiRecommendationLabel: "एआई सल्ला",
+        expPriceRise: "अपेक्षित भाव वाढ:",
+        storageMoistureFee: "साठवणूक व ओल नुकसान:",
+        netProfitGainLabel: "निव्वळ नफा वाढ:",
+        mandiCompTitle: "🚛 बाजार समिती निव्वळ उत्पन्न तुलना",
+        mandiCompSub: "वाहतूक भाडे आणि वखार खर्च वजा करून बँक खात्यात मिळणाऱ्या खऱ्या रकमेची गणना",
+        distFromFarm: "शेतापासून अंतर:",
+        grossPriceLabel: "एकूण बाजार भाव:",
+        transportFreightLabel: "वाहतूक भाडे:",
+        handlingStorageLabel: "साठवणूक खर्च:",
+        netBankRealizationLabel: "बँक खात्यातील निव्वळ भाव:",
+        activeLotsTitle: "📦 सक्रिय शेतमाल लॉट व व्यवहार",
+        lotId: "लॉट आयडी",
+        cropCommodity: "शेतमाल व जात",
+        quantity: "प्रमाण",
+        expectedRate: "अपेक्षित भाव",
+        qualityGrade: "दर्जा ग्रेड",
+        pipelineStatus: "प्रगती स्थिती",
+        certificate: "प्रमाणपत्र",
+        viewCert: "📜 प्रमाणपत्र पाहा",
+        buyerPortal: "खरेदीदार पोर्टल",
+        buyerSub: "जीएसटी: 27AAAAA0000A1Z5 • मुंबई बाजार समिती व थेट खरेदी",
+        directFarmLotsTitle: "🌾 थेट शेतकऱ्यांकडून खरेदीसाठी उपलब्ध लॉट",
+        inspectCertBtn: "📜 गुणवत्ता प्रमाणपत्र तपासा",
+        makeOfferBtn: "🤝 खरेदी ऑफर पाठवा",
+        myOffersTitle: "📜 माझ्या चालू खरेदी ऑफर आणि चर्चा",
+        offeredRate: "प्रस्तावित भाव:",
+        contractVal: "एकूण करार मूल्य:",
+        spHubTitle: "कृषी सेवा केंद्र 🚚",
+        spHubSub: "गुणवत्ता तपासणी • वखार साठवणूक • वाहतूक सेवा",
+        logisticsTab: "🚚 वाहतूक व जीपीएस ट्रॅकिंग",
+        assessorTab: "🔬 गुणवत्ता तपासणी",
+        storageTab: "🏬 वखार साठवणूक",
+        gpsTitle: "🚚 महाट्रांस थेट जीपीएस ट्रॅकिंग",
+        gpsSub: "थेट जीपीएस लोकेशन, तापमान नोंदी आणि पोच पावती (PoD)",
+        reeferTemp: "रीफर तापमान:",
+        etaRemaining: "मिनिटे शिल्लक",
+        routeProgress: "वाहतूक प्रगती:",
+        currentPosition: "चालू ठिकाण:",
+        btnConfirmDelivery: "✅ पोच पावती निश्चित करा व पैसे हस्तांतरित करा",
+        qualityTitle: "🔬 डिजिटल गुणवत्ता तपासणी व श्रेणी",
+        issueCertBtn: "+ गुणवत्ता प्रमाणपत्र तयार करा",
+        warehouseTitle: "🏬 ॲपेक्स वखार क्षमता मॉनिटर",
+        totalCap: "एकूण क्षमता",
+        currentlyBooked: "सध्या वापरलेली",
+        availSpace: "शिल्लक जागा",
+        step1: "1. मुख्य पान व भूमिका ✅",
+        step2: "2. ऑनबोर्डिंग व केवायसी ✅",
+        step3: "3. बाजार एआई अंदाज 🧠",
+        step4: "4. गुणवत्ता व खरेदी ऑफर 📜",
+        step5: "5. वाहतूक व पैसे हस्तांतरण 🚚",
+        speaking: "बोलत आहे...",
+        voiceAdvice: "आवाज सल्ला",
+        endModalTitle: "पोच पावती व एस्क्रो पेमेंट मंजूर",
+        endModalSub: "प्रवेशापासून ते पेमेंट हस्तांतरणापर्यंत सर्व प्रक्रिया यशस्वीरीत्या पूर्ण झाली.",
+        payoutLabel: "शेतकरी खात्यात जमा:",
+        deliveryLocLabel: "पोच ठिकाण:",
+        digitalTrailLabel: "डिजिटल नोंद:",
+        rateExp: "आपला अनुभव नोंदवा (अभिप्राय फीडबॅक)",
+        feedbackSub: "आपला अभिप्राय एआई मॉडेल सुधारण्यासाठी वापरला जातो.",
+        returnHomeBtn: "🏠 मुख्य पानावर जा",
+        viewPipelineBtn: "📊 चालू व्यवहार पाहा"
+      }
+    };
+
+    function App() {
+      const params = new URLSearchParams(window.location.search);
+      const savedUserStr = localStorage.getItem('krishisetu_user');
+      let savedUser = null;
+      try { savedUser = JSON.parse(savedUserStr); } catch(e){}
+      const initialRole = params.get('role') || (savedUser && savedUser.role) || 'farmer';
+
+      const [currentRole, setCurrentRole] = useState(initialRole);
+      const [spSubType, setSpSubType] = useState('assessor');
+      const [language, setLanguage] = useState(localStorage.getItem('krishisetu_lang') || 'hi');
+      const [isSpeaking, setIsSpeaking] = useState(false);
+      const [marketPrices, setMarketPrices] = useState([]);
+      const [mandiComparisons, setMandiComparisons] = useState([]);
+      const [logisticsDispatches, setLogisticsDispatches] = useState([]);
+      const [selectedForecastCrop, setSelectedForecastCrop] = useState('Onion (Nashik Red)');
+      const [forecastData, setForecastData] = useState(null);
+      const [lots, setLots] = useState([]);
+      const [offers, setOffers] = useState([]);
+      const [storageBookings, setStorageBookings] = useState([]);
+      const [qualityRequests, setQualityRequests] = useState([]);
+
+      // Modals State
+      const [showCreateLotModal, setShowCreateLotModal] = useState(false);
+      const [showStorageModal, setShowStorageModal] = useState(false);
+      const [showQualityCertModal, setShowQualityCertModal] = useState(false);
+      const [showCertViewerModal, setShowCertViewerModal] = useState(false);
+      const [selectedCertForView, setSelectedCertForView] = useState(null);
+      const [showOfferModal, setShowOfferModal] = useState(false);
+      const [selectedLotForOffer, setSelectedLotForOffer] = useState(null);
+      const [showEndingCompletionModal, setShowEndingCompletionModal] = useState(false);
+      const [completedDispatchData, setCompletedDispatchData] = useState(null);
+      const [ratingStars, setRatingStars] = useState(5);
+
+      const [toastMsg, setToastMsg] = useState('');
+
+      const t = (key) => {
+        const dict = dashboardI18n[language] || dashboardI18n.en;
+        return dict[key] || dashboardI18n.en[key] || key;
+      };
+
+      const handleLangChange = (lang) => {
+        setLanguage(lang);
+        localStorage.setItem('krishisetu_lang', lang);
+      };
+
+      const showToast = (msg) => {
+        setToastMsg(msg);
+        setTimeout(() => setToastMsg(''), 4000);
+      };
+
+      const speakText = (text, langCode) => {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = langCode === 'hi' ? 'hi-IN' : langCode === 'mr' ? 'mr-IN' : 'en-US';
+          utterance.rate = 0.9;
+          utterance.onstart = () => setIsSpeaking(true);
+          utterance.onend = () => setIsSpeaking(false);
+          utterance.onerror = () => setIsSpeaking(false);
+          window.speechSynthesis.speak(utterance);
+        } else {
+          showToast('🔊 Audio readout not supported in this browser.');
+        }
+      };
+
+      const handleVoiceReadout = () => {
+        let msg = '';
+        if (language === 'hi') {
+          msg = `कृषिसितु सलाह: ${selectedForecastCrop} के लिए अनुशंसित कदम गोदाम में रखना है। शुद्ध लाभ वृद्धि ₹340 प्रति क्विंटल है।`;
+        } else if (language === 'mr') {
+          msg = `कृषिसितू सल्ला: ${selectedForecastCrop} साठी वखारीत साठवणूक करा. निव्वळ नफा प्रति क्विंटल ₹340 अधिक मिळेल.`;
+        } else {
+          msg = `KrishiSetu Advice: Recommended Action is to Hold ${selectedForecastCrop} in Warehouse. Net profit gain is higher.`;
+        }
+        speakText(msg, language);
+      };
+
+      const fetchData = () => {
+        fetch('/api/market-data')
+          .then(res => res.json())
+          .then(data => {
+            setMarketPrices(data.prices || []);
+            setMandiComparisons(data.mandiComparisons || []);
+            setLogisticsDispatches(data.logisticsDispatches || []);
+          })
+          .catch(err => console.error(err));
+
+        fetch('/api/lots')
+          .then(res => res.json())
+          .then(data => {
+            setLots(data.lots || []);
+            setOffers(data.offers || []);
+            setStorageBookings(data.storageBookings || []);
+            setQualityRequests(data.qualityRequests || []);
+          })
+          .catch(err => console.error(err));
+      };
+
+      const fetchForecast = (cropName) => {
+        fetch(`/api/price-forecast?crop=${encodeURIComponent(cropName)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) setForecastData(data.forecast);
+          });
+      };
+
+      useEffect(() => {
+        fetchData();
+        fetchForecast(selectedForecastCrop);
+        const interval = setInterval(fetchData, 10000);
+        return () => clearInterval(interval);
+      }, []);
+
+      useEffect(() => {
+        fetchForecast(selectedForecastCrop);
+      }, [selectedForecastCrop]);
+
+      const handleConfirmDelivery = (dispatchId) => {
+        fetch('/api/confirm-delivery', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dispatchId })
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            showToast('🎉 Proof of Delivery Confirmed! Escrow Payment Released.');
+            setCompletedDispatchData(res.dispatch);
+            setShowEndingCompletionModal(true);
+            fetchData();
+          }
+        });
+      };
+
+      const handleCreateLot = (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const payload = {
+          farmerName: 'Ramesh Patil',
+          crop: form.crop.value,
+          qty: form.qty.value,
+          unit: form.unit.value,
+          expectedPrice: form.expectedPrice.value,
+          grade: form.grade.value,
+          location: form.location.value
+        };
+
+        fetch('/api/create-lot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            showToast('✅ Crop Lot successfully published to Buyer Network!');
+            setShowCreateLotModal(false);
+            fetchData();
+          }
+        });
+      };
+
+      const handleBookStorage = (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const payload = {
+          farmerName: 'Ramesh Patil',
+          warehouseName: form.warehouse.value,
+          crop: form.crop.value,
+          qty: form.qty.value,
+          durationDays: form.duration.value
+        };
+
+        fetch('/api/storage-booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            showToast('📦 Warehouse storage slot booked! Deposit receipt generated.');
+            setShowStorageModal(false);
+            fetchData();
+          }
+        });
+      };
+
+      const handleIssueQualityCert = (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const payload = {
+          lotId: form.lotId.value,
+          farmerName: 'Ramesh Patil',
+          crop: selectedForecastCrop,
+          moisturePct: form.moisture.value + '%',
+          foreignMatterPct: form.foreignMatter.value + '%',
+          gradeAssigned: form.grade.value,
+          inspector: 'Krishi Quality Labs (Agmark Verified)'
+        };
+
+        fetch('/api/quality-verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            showToast('🔬 Digital Quality Certificate generated with Cryptographic Hash!');
+            setShowQualityCertModal(false);
+            fetchData();
+          }
+        });
+      };
+
+      const handleMakeOffer = (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const payload = {
+          lotId: selectedLotForOffer.id,
+          buyerName: 'AgriCorp Traders Ltd',
+          offeredPrice: form.offeredPrice.value,
+          qty: selectedLotForOffer.qty
+        };
+
+        fetch('/api/make-offer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            showToast('🤝 Purchase offer sent to farmer! Direct negotiation opened.');
+            setShowOfferModal(false);
+            fetchData();
+          }
+        });
+      };
+
+      // DYNAMIC SVG CHART SCALE CALCULATOR
+      const renderForecastSvg = () => {
+        if (!forecastData || !forecastData.prices || forecastData.prices.length === 0) return null;
+
+        const prices = forecastData.prices;
+        const minP = Math.min(...prices);
+        const maxP = Math.max(...prices);
+        const rangeP = (maxP - minP) || 1;
+
+        const points = prices.map((p, idx) => {
+          const cx = 35 + idx * 72;
+          const cy = 120 - ((p - minP) / rangeP) * 90;
+          return { cx, cy, price: p, day: forecastData.days[idx] };
+        });
+
+        const pathD = `M ${points.map(pt => `${pt.cx} ${pt.cy}`).join(' L ')}`;
+
+        return (
+          <div class="relative h-48 w-full">
+            <svg class="w-full h-full overflow-visible" viewBox="0 0 500 150">
+              <line x1="10" y1="30" x2="490" y2="30" stroke="#E5E7EB" stroke-dasharray="4" />
+              <line x1="10" y1="75" x2="490" y2="75" stroke="#E5E7EB" stroke-dasharray="4" />
+              <line x1="10" y1="120" x2="490" y2="120" stroke="#E5E7EB" stroke-dasharray="4" />
+
+              <rect x="290" y="15" width="140" height="115" fill="rgba(34, 197, 94, 0.14)" rx="10" stroke="#22C55E" stroke-dasharray="2" />
+
+              <path d={pathD} fill="none" stroke="#1B5E3B" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+
+              {points.map((pt, idx) => (
+                <g key={idx}>
+                  <circle cx={pt.cx} cy={pt.cy} r="6" fill={idx >= 4 ? '#F2B01E' : '#1B5E3B'} stroke="#FFF" stroke-width="2.5" />
+                  <text x={pt.cx} y={pt.cy - 12} font-size="11" font-weight="800" fill="#1C241E" text-anchor="middle">₹{pt.price}</text>
+                  <text x={pt.cx} y="145" font-size="10" font-weight="700" fill="#6B7280" text-anchor="middle">Day {pt.day}</text>
+                </g>
+              ))}
+            </svg>
+          </div>
+        );
+      };
+
+      return (
+        <div class="min-h-screen flex flex-col">
+          
+          {/* TOAST NOTIFICATION */}
+          {toastMsg && (
+            <div class="fixed top-5 right-5 z-50 bg-agri-600 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-agri-500 text-base font-bold animate-bounce">
+              <span>{toastMsg}</span>
+            </div>
+          )}
+
+          {/* HEADER NAV WITH END-TO-END STEPPER */}
+          <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+              
+              <a href="/" class="flex items-center gap-3 text-2xl font-black text-agri-600 tracking-tight">
+                <span class="text-3xl">🌾</span>
+                <span>KrishiSetu</span>
+              </a>
+
+              {/* Role Switcher Pill Bar */}
+              <div class="flex items-center bg-gray-100 p-1.5 rounded-full border border-gray-200 gap-1">
+                <button 
+                  onClick={() => setCurrentRole('farmer')}
+                  class={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${currentRole === 'farmer' ? 'bg-agri-600 text-white shadow-md' : 'text-gray-600 hover:text-gray-900'}`}
+                >
+                  🧑‍🌾 {t('roleFarmerTitle') || 'Farmer / FPO'}
+                </button>
+                <button 
+                  onClick={() => setCurrentRole('buyer')}
+                  class={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${currentRole === 'buyer' ? 'bg-agri-600 text-white shadow-md' : 'text-gray-600 hover:text-gray-900'}`}
+                >
+                  🏬 {t('buyerPortal') || 'Buyer'}
+                </button>
+                <button 
+                  onClick={() => setCurrentRole('service-provider')}
+                  class={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${currentRole === 'service-provider' ? 'bg-agri-600 text-white shadow-md' : 'text-gray-600 hover:text-gray-900'}`}
+                >
+                  🚚 {t('spHubTitle') || 'Service Provider'}
+                </button>
+              </div>
+
+              {/* Language Switcher & Audio Assistant */}
+              <div class="flex items-center gap-3">
+                <div class="flex bg-gray-100 p-1 rounded-full border border-gray-200 text-xs font-bold">
+                  <button onClick={() => handleLangChange('en')} class={`px-3 py-1 rounded-full transition ${language === 'en' ? 'bg-agri-600 text-white' : 'text-gray-600'}`}>EN</button>
+                  <button onClick={() => handleLangChange('hi')} class={`px-3 py-1 rounded-full transition ${language === 'hi' ? 'bg-agri-600 text-white' : 'text-gray-600'}`}>हिंदी</button>
+                  <button onClick={() => handleLangChange('mr')} class={`px-3 py-1 rounded-full transition ${language === 'mr' ? 'bg-agri-600 text-white' : 'text-gray-600'}`}>मराठी</button>
+                </div>
+
+                <button 
+                  onClick={handleVoiceReadout}
+                  class={`p-2.5 rounded-full border border-agri-500 font-bold transition flex items-center gap-1.5 text-xs ${isSpeaking ? 'bg-harvest-500 text-harvest-900 animate-pulse' : 'bg-agri-50 text-agri-700 hover:bg-agri-100'}`}
+                  title="Audio Voice Guidance"
+                >
+                  <span class="text-base">🔊</span>
+                  <span class="hidden md:inline">{isSpeaking ? t('speaking') : t('voiceAdvice')}</span>
+                </button>
+              </div>
+            </div>
+          </header>
+
+          {/* SYSTEM PIPELINE STEPPER BAR */}
+          <div class="bg-gray-900 text-white py-3 border-b border-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs font-bold overflow-x-auto gap-4">
+              <a href="/" class="hover:text-harvest-400 flex items-center gap-1 shrink-0">{t('step1')}</a>
+              <span class="text-gray-600">➔</span>
+              <a href="/login" class="hover:text-harvest-400 flex items-center gap-1 shrink-0">{t('step2')}</a>
+              <span class="text-gray-600">➔</span>
+              <span class="text-harvest-400 flex items-center gap-1 shrink-0">{t('step3')}</span>
+              <span class="text-gray-600">➔</span>
+              <span class="text-agri-400 flex items-center gap-1 shrink-0">{t('step4')}</span>
+              <span class="text-gray-600">➔</span>
+              <span class="text-agri-400 flex items-center gap-1 shrink-0">{t('step5')}</span>
+            </div>
+          </div>
+
+          {/* MAIN ROLE CONTENT CONTAINER */}
+          <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+            {/* 1. FARMER / FPO DASHBOARD VIEW */}
+            {currentRole === 'farmer' && (
+              <div class="space-y-8">
+                
+                {/* Welcome Header */}
+                <div class="bg-gradient-to-r from-agri-700 to-agri-900 text-white rounded-3xl p-8 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div>
+                    <div class="inline-block px-3 py-1 bg-harvest-500 text-harvest-900 font-extrabold text-xs rounded-full uppercase tracking-wider mb-2">{t('farmerPortal')}</div>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold">{t('welcomeTitle')}</h1>
+                    <p class="text-agri-100 mt-1 text-base">{t('welcomeSub')}</p>
+                  </div>
+                  <div class="flex flex-wrap gap-3">
+                    <button 
+                      onClick={() => setShowCreateLotModal(true)}
+                      class="bg-harvest-500 hover:bg-harvest-600 text-harvest-900 font-extrabold px-6 py-3.5 rounded-full shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2 text-base"
+                    >
+                      {t('btnCreateLot')}
+                    </button>
+                    <button 
+                      onClick={() => setShowStorageModal(true)}
+                      class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold px-6 py-3.5 rounded-full transition flex items-center gap-2 text-base"
+                    >
+                      {t('btnBookStorage')}
+                    </button>
+                  </div>
+                </div>
+
+                {/* AI MARKET INTELLIGENCE & FORECAST VISUALIZER */}
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-lg space-y-6">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 pb-4 gap-4">
+                    <div>
+                      <h2 class="text-2xl font-black text-gray-900 flex items-center gap-2">
+                        {t('aiForecastTitle')}
+                        <button onClick={handleVoiceReadout} class="text-xl hover:scale-110 transition" title="Listen in audio">🔊</button>
+                      </h2>
+                      <p class="text-sm text-gray-500">{t('aiForecastSub')}</p>
+                    </div>
+
+                    {/* Commodity Switcher */}
+                    <div class="flex bg-gray-100 p-1.5 rounded-full border border-gray-200 gap-1">
+                      {['Onion (Nashik Red)', 'Tomato (Hybrid)', 'Soybean (Yellow)', 'Wheat (Sharbati)'].map((crop) => (
+                        <button 
+                          key={crop}
+                          onClick={() => setSelectedForecastCrop(crop)}
+                          class={`px-3 py-1.5 rounded-full text-xs font-extrabold transition ${selectedForecastCrop === crop ? 'bg-agri-600 text-white shadow' : 'text-gray-600 hover:text-gray-900'}`}
+                        >
+                          {crop.split(' ')[0]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Forecast Graph & Stats Container */}
+                  {forecastData && (
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      
+                      {/* Left: Dynamic SVG Forecast Line Chart */}
+                      <div class="lg:col-span-2 bg-gray-50 rounded-2xl p-6 border border-gray-200 space-y-4">
+                        <div class="flex justify-between items-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          <span>30-Day Price Projection Curve (₹/quintal) — {selectedForecastCrop}</span>
+                          <span class="text-agri-600">{t('optimalWindowLabel')} {forecastData.optimalWindow}</span>
+                        </div>
+
+                        {renderForecastSvg()}
+                      </div>
+
+                      {/* Right: Recommendation Verdict Box */}
+                      <div class="bg-gradient-to-br from-agri-50 to-emerald-100/60 rounded-2xl p-6 border border-agri-200 flex flex-col justify-between space-y-4">
+                        <div>
+                          <div class="text-xs font-black text-agri-800 uppercase tracking-wider mb-1">{t('aiRecommendationLabel')}</div>
+                          <div class="text-2xl font-black text-agri-900">{forecastData.recommendation}</div>
+                          <p class="text-xs text-agri-700 mt-2">
+                            Holding produce for <strong>{forecastData.optimalWindow}</strong> is predicted to yield a net profit gain of <strong>{forecastData.gainPct}</strong> after storage & moisture loss deductions.
+                          </p>
+                        </div>
+
+                        <div class="space-y-2 bg-white/80 p-4 rounded-xl border border-agri-200 text-xs">
+                          <div class="flex justify-between font-bold text-gray-700">
+                            <span>{t('expPriceRise')}</span>
+                            <span class="text-agri-700 font-extrabold">+₹{forecastData.grossGain}/qtl</span>
+                          </div>
+                          <div class="flex justify-between font-bold text-gray-700">
+                            <span>{t('storageMoistureFee')}</span>
+                            <span class="text-earth font-extrabold">-₹{forecastData.holdingCost}/qtl</span>
+                          </div>
+                          <div class="pt-2 border-t border-agri-200 flex justify-between font-black text-sm text-gray-900">
+                            <span>{t('netProfitGainLabel')}</span>
+                            <span class="text-agri-600">+₹{forecastData.netGain}/qtl</span>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  )}
+                </div>
+
+                {/* MANDI NET REALIZATION CALCULATOR */}
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-lg space-y-6">
+                  <div class="border-b border-gray-100 pb-4">
+                    <h2 class="text-2xl font-black text-gray-900">{t('mandiCompTitle')}</h2>
+                    <p class="text-sm text-gray-500">{t('mandiCompSub')}</p>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {mandiComparisons.map((m, idx) => (
+                      <div key={idx} class={`rounded-2xl p-6 border transition space-y-4 ${idx === 2 ? 'bg-agri-50 border-agri-500 shadow-md ring-2 ring-agri-500/20' : 'bg-gray-50 border-gray-200'}`}>
+                        <div class="flex justify-between items-center">
+                          <span class="font-black text-lg text-gray-900">{m.mandi}</span>
+                          <span class="text-xs font-black px-3 py-1 bg-white text-agri-700 border border-agri-300 rounded-full shadow-sm">{m.rank}</span>
+                        </div>
+
+                        <div>
+                          <div class="text-xs text-gray-500 font-bold">{t('distFromFarm')} {m.distanceKm} km</div>
+                          <div class="text-2xl font-black text-agri-600 mt-1">₹{m.grossPrice} <span class="text-xs text-gray-500 font-normal">/qtl</span></div>
+                        </div>
+
+                        <div class="space-y-1 text-xs border-t border-gray-200 pt-3">
+                          <div class="flex justify-between text-gray-600 font-bold">
+                            <span>{t('transportFreightLabel')}</span>
+                            <span class="text-earth">-₹{m.transportCost}/qtl</span>
+                          </div>
+                          <div class="flex justify-between text-gray-600 font-bold">
+                            <span>{t('handlingStorageLabel')}</span>
+                            <span class="text-earth">-₹{m.storageCost}/qtl</span>
+                          </div>
+                          <div class="pt-2 border-t border-gray-300 flex justify-between font-black text-sm text-gray-900">
+                            <span>{t('netBankRealizationLabel')}</span>
+                            <span class="text-agri-700 text-base">₹{m.netRealization}/qtl</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* MY ACTIVE CROP LOTS & PIPELINE */}
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-lg space-y-6">
+                  <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                    <h2 class="text-2xl font-black text-gray-900">{t('activeLotsTitle')}</h2>
+                    <span class="text-sm font-bold text-agri-600">{lots.length} Lots</span>
+                  </div>
+
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                      <thead>
+                        <tr class="border-b border-gray-200 text-xs font-black text-gray-400 uppercase tracking-wider bg-gray-50">
+                          <th class="p-4">{t('lotId')}</th>
+                          <th class="p-4">{t('cropCommodity')}</th>
+                          <th class="p-4">{t('quantity')}</th>
+                          <th class="p-4">{t('expectedRate')}</th>
+                          <th class="p-4">{t('qualityGrade')}</th>
+                          <th class="p-4">{t('pipelineStatus')}</th>
+                          <th class="p-4">{t('certificate')}</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-100 text-sm font-bold">
+                        {lots.map((lot) => (
+                          <tr key={lot.id} class="hover:bg-gray-50/80 transition">
+                            <td class="p-4 font-extrabold text-agri-600">{lot.id}</td>
+                            <td class="p-4 text-gray-900">{lot.crop}</td>
+                            <td class="p-4 text-gray-700">{lot.qty} {lot.unit}</td>
+                            <td class="p-4 text-gray-900">₹{lot.expectedPrice}/qtl</td>
+                            <td class="p-4">
+                              <span class="px-3 py-1 bg-agri-50 text-agri-700 border border-agri-300 rounded-full text-xs font-black">
+                                {lot.grade}
+                              </span>
+                            </td>
+                            <td class="p-4">
+                              <span class="px-3 py-1 bg-harvest-100 text-harvest-900 rounded-full text-xs font-extrabold">
+                                {lot.status}
+                              </span>
+                            </td>
+                            <td class="p-4">
+                              <button 
+                                onClick={() => { setSelectedCertForView(qualityRequests[0]); setShowCertViewerModal(true); }}
+                                class="text-xs font-black text-agri-600 hover:underline flex items-center gap-1"
+                              >
+                                {t('viewCert')}
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* 2. ENTERPRISE BUYER DASHBOARD VIEW */}
+            {currentRole === 'buyer' && (
+              <div class="space-y-8">
+                
+                {/* Welcome Header */}
+                <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-3xl p-8 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div>
+                    <div class="inline-block px-3 py-1 bg-harvest-500 text-harvest-900 font-extrabold text-xs rounded-full uppercase tracking-wider mb-2">{t('buyerPortal')}</div>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold">AgriCorp Traders Ltd 🏬</h1>
+                    <p class="text-gray-300 mt-1 text-base">{t('buyerSub')}</p>
+                  </div>
+                </div>
+
+                {/* AVAILABLE FARMER LOTS TO PURCHASE */}
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-lg space-y-6">
+                  <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                    <h2 class="text-2xl font-black text-gray-900">{t('directFarmLotsTitle')}</h2>
+                    <span class="text-sm font-bold text-agri-600">Agmark Certified</span>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {lots.map((lot) => (
+                      <div key={lot.id} class="bg-gray-50 rounded-2xl p-6 border border-gray-200 hover:border-agri-500 transition space-y-4 flex flex-col justify-between">
+                        <div class="space-y-2">
+                          <div class="flex justify-between items-center">
+                            <span class="text-xs font-black text-agri-600">{lot.id}</span>
+                            <span class="px-3 py-1 bg-agri-100 text-agri-800 text-xs font-extrabold rounded-full">{lot.grade}</span>
+                          </div>
+                          <h3 class="text-xl font-black text-gray-900">{lot.crop}</h3>
+                          <div class="text-xs text-gray-500">Farmer: <strong class="text-gray-800">{lot.farmerName}</strong></div>
+                          <div class="text-sm font-bold text-gray-700">{t('quantity')}: {lot.qty} {lot.unit}</div>
+                          <div class="text-2xl font-black text-agri-600">₹{lot.expectedPrice} <span class="text-xs text-gray-500 font-normal">/ quintal</span></div>
+                          <div class="text-xs text-gray-500 flex items-center gap-1">📍 {lot.location}</div>
+                        </div>
+
+                        <div class="space-y-2 pt-2">
+                          <button 
+                            onClick={() => { setSelectedCertForView(qualityRequests[0]); setShowCertViewerModal(true); }}
+                            class="w-full bg-white border border-gray-300 hover:border-agri-600 text-gray-700 font-bold py-2 rounded-xl text-xs transition"
+                          >
+                            {t('inspectCertBtn')}
+                          </button>
+                          <button 
+                            onClick={() => { setSelectedLotForOffer(lot); setShowOfferModal(true); }}
+                            class="w-full bg-harvest-500 hover:bg-harvest-600 text-harvest-900 font-extrabold py-3 rounded-xl shadow transition text-center"
+                          >
+                            {t('makeOfferBtn')}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* MY BIDS & OFFERS */}
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-lg space-y-6">
+                  <h2 class="text-2xl font-black text-gray-900 border-b border-gray-100 pb-4">{t('myOffersTitle')}</h2>
+                  <div class="space-y-3">
+                    {offers.map((off) => (
+                      <div key={off.id} class="bg-gray-50 p-5 rounded-2xl border border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                          <div class="flex items-center gap-3">
+                            <span class="font-extrabold text-agri-600">{off.id}</span>
+                            <span class="text-xs font-bold text-gray-500">Target Lot: {off.lotId}</span>
+                          </div>
+                          <div class="text-base font-black text-gray-900">{t('offeredRate')} ₹{off.offeredPrice}/qtl ({off.qty} qtl)</div>
+                          <div class="text-xs text-gray-600">{t('contractVal')} ₹{off.totalVal.toLocaleString('en-IN')}</div>
+                        </div>
+                        <span class="px-4 py-2 bg-harvest-100 text-harvest-900 font-extrabold text-xs rounded-full">
+                          {off.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* 3. SERVICE PROVIDER DASHBOARD VIEW */}
+            {currentRole === 'service-provider' && (
+              <div class="space-y-8">
+                
+                {/* Welcome Header */}
+                <div class="bg-gradient-to-r from-amber-700 to-amber-900 text-white rounded-3xl p-8 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div>
+                    <div class="inline-block px-3 py-1 bg-harvest-500 text-harvest-900 font-extrabold text-xs rounded-full uppercase tracking-wider mb-2">Service Provider Ecosystem</div>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold">{t('spHubTitle')}</h1>
+                    <p class="text-amber-100 mt-1 text-base">{t('spHubSub')}</p>
+                  </div>
+
+                  {/* Sub-type Switcher */}
+                  <div class="flex bg-black/20 p-1.5 rounded-full border border-white/20 gap-1">
+                    <button 
+                      onClick={() => setSpSubType('logistics')}
+                      class={`px-4 py-2 rounded-full text-xs font-black transition ${spSubType === 'logistics' ? 'bg-white text-amber-900' : 'text-amber-100'}`}
+                    >
+                      {t('logisticsTab')}
+                    </button>
+                    <button 
+                      onClick={() => setSpSubType('assessor')}
+                      class={`px-4 py-2 rounded-full text-xs font-black transition ${spSubType === 'assessor' ? 'bg-white text-amber-900' : 'text-amber-100'}`}
+                    >
+                      {t('assessorTab')}
+                    </button>
+                    <button 
+                      onClick={() => setSpSubType('storage')}
+                      class={`px-4 py-2 rounded-full text-xs font-black transition ${spSubType === 'storage' ? 'bg-white text-amber-900' : 'text-amber-100'}`}
+                    >
+                      {t('storageTab')}
+                    </button>
+                  </div>
+                </div>
+
+                {/* LOGISTICS & REAL-TIME GPS TRACKER VIEW */}
+                {spSubType === 'logistics' && (
+                  <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-lg space-y-6">
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                      <div>
+                        <h2 class="text-2xl font-black text-gray-900">{t('gpsTitle')}</h2>
+                        <p class="text-xs text-gray-500">{t('gpsSub')}</p>
+                      </div>
+                      <span class="px-4 py-1.5 bg-agri-100 text-agri-800 text-xs font-black rounded-full">LIVE TELEMATICS ACTIVE 📡</span>
+                    </div>
+
+                    {logisticsDispatches.map((disp) => (
+                      <div key={disp.dispatchId} class="bg-gray-50 p-6 sm:p-8 rounded-2xl border border-gray-200 space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-4">
+                          <div>
+                            <div class="flex items-center gap-3">
+                              <span class="text-xl font-black text-agri-600">{disp.dispatchId}</span>
+                              <span class="text-xs font-bold text-gray-500">Lot: {disp.lotId}</span>
+                              <span class="px-3 py-1 bg-agri-600 text-white text-xs font-extrabold rounded-full">{disp.status}</span>
+                            </div>
+                            <div class="text-sm font-bold text-gray-700 mt-1">
+                              Origin: <strong>{disp.origin}</strong> ➔ Destination: <strong>{disp.destination}</strong>
+                            </div>
+                          </div>
+
+                          <button 
+                            onClick={() => handleConfirmDelivery(disp.dispatchId)}
+                            class="bg-harvest-500 hover:bg-harvest-600 text-harvest-900 font-extrabold px-6 py-3 rounded-full text-sm shadow transition self-start sm:self-auto flex items-center gap-2"
+                          >
+                            <span>{t('btnConfirmDelivery')}</span>
+                          </button>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-4 rounded-xl border border-gray-200 text-xs font-bold">
+                          <div>Driver: <span class="text-gray-900 font-extrabold">{disp.driverName} ({disp.driverPhone})</span></div>
+                          <div>Vehicle No: <span class="text-agri-600 font-extrabold">{disp.vehicleNo}</span></div>
+                          <div>{t('reeferTemp')} <span class="text-blue-600 font-extrabold">{disp.tempCelsius}</span></div>
+                          <div>ETA: <span class="text-harvest-600 font-extrabold">{disp.etaMinutes} {t('etaRemaining')}</span></div>
+                        </div>
+
+                        <div class="space-y-2">
+                          <div class="flex justify-between text-xs font-black text-gray-700">
+                            <span>{t('routeProgress')} {disp.progressPct}%</span>
+                            <span class="text-agri-600">{t('currentPosition')} 📍 {disp.currentLocation}</span>
+                          </div>
+                          <div class="w-full bg-gray-200 h-3.5 rounded-full overflow-hidden p-0.5">
+                            <div class="bg-gradient-to-r from-agri-500 to-agri-600 h-full rounded-full transition-all duration-500" style={{ width: `${disp.progressPct}%` }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* QUALITY ASSESSOR VIEW */}
+                {spSubType === 'assessor' && (
+                  <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-lg space-y-6">
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                      <div>
+                        <h2 class="text-2xl font-black text-gray-900">{t('qualityTitle')}</h2>
+                        <p class="text-xs text-gray-500">Cryptographically signed Digital Quality Certificates</p>
+                      </div>
+                      <button 
+                        onClick={() => setShowQualityCertModal(true)}
+                        class="bg-agri-600 hover:bg-agri-700 text-white font-extrabold px-6 py-3 rounded-full text-sm shadow transition"
+                      >
+                        {t('issueCertBtn')}
+                      </button>
+                    </div>
+
+                    <div class="space-y-4">
+                      {qualityRequests.map((qr) => (
+                        <div key={qr.id} class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-3">
+                          <div class="flex justify-between items-center">
+                            <span class="font-extrabold text-agri-600">{qr.id}</span>
+                            <span class="px-3 py-1 bg-agri-100 text-agri-800 text-xs font-black rounded-full">{qr.gradeAssigned}</span>
+                          </div>
+                          <div class="text-lg font-black text-gray-900">{qr.crop} (Lot: {qr.lotId})</div>
+                          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-bold bg-white p-4 rounded-xl border border-gray-200">
+                            <div>Moisture Content: <span class="text-agri-600 font-extrabold">{qr.moisturePct}</span></div>
+                            <div>Foreign Matter: <span class="text-agri-600 font-extrabold">{qr.foreignMatterPct}</span></div>
+                            <div>Inspector: <span class="text-gray-900 font-extrabold">{qr.inspector}</span></div>
+                            <div>Digital Hash: <span class="text-gray-500 font-mono">{qr.certHash}</span></div>
+                          </div>
+                          <button 
+                            onClick={() => { setSelectedCertForView(qr); setShowCertViewerModal(true); }}
+                            class="bg-agri-600 text-white font-bold px-4 py-2 rounded-xl text-xs hover:bg-agri-700 transition"
+                          >
+                            {t('inspectCertBtn')}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* STORAGE WAREHOUSE VIEW */}
+                {spSubType === 'storage' && (
+                  <div class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-lg space-y-6">
+                    <h2 class="text-2xl font-black text-gray-900 border-b border-gray-100 pb-4">{t('warehouseTitle')}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div class="bg-agri-50 p-6 rounded-2xl border border-agri-200">
+                        <div class="text-xs font-extrabold text-agri-700 uppercase">{t('totalCap')}</div>
+                        <div class="text-3xl font-black text-agri-900">5,000 MT</div>
+                      </div>
+                      <div class="bg-amber-50 p-6 rounded-2xl border border-amber-200">
+                        <div class="text-xs font-extrabold text-amber-700 uppercase">{t('currentlyBooked')}</div>
+                        <div class="text-3xl font-black text-amber-900">3,420 MT (68%)</div>
+                      </div>
+                      <div class="bg-blue-50 p-6 rounded-2xl border border-blue-200">
+                        <div class="text-xs font-extrabold text-blue-700 uppercase">{t('availSpace')}</div>
+                        <div class="text-3xl font-black text-blue-900">1,580 MT</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            )}
+
+          </main>
+
+          {/* MODALS */}
+
+          {/* 1. ENDING COMPLETION MODAL */}
+          {showEndingCompletionModal && completedDispatchData && (
+            <div class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+              <div class="bg-white rounded-3xl max-w-2xl w-full p-8 shadow-2xl space-y-6 relative border-4 border-agri-500 animate-fadeIn">
+                <button onClick={() => setShowEndingCompletionModal(false)} class="absolute top-6 right-6 text-2xl text-gray-400 hover:text-gray-700">✕</button>
+                
+                <div class="text-center space-y-2">
+                  <div class="w-16 h-16 bg-agri-100 text-agri-600 rounded-full flex items-center justify-center text-3xl mx-auto font-black shadow-inner">🎉</div>
+                  <div class="inline-block px-4 py-1 bg-agri-100 text-agri-800 text-xs font-black rounded-full uppercase tracking-wider">End-to-End Transaction Pipeline Completed!</div>
+                  <h3 class="text-3xl font-black text-gray-900">{t('endModalTitle')}</h3>
+                  <p class="text-sm text-gray-500">{t('endModalSub')}</p>
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-4 text-xs font-bold">
+                  <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+                    <span class="text-gray-500">Dispatch ID:</span>
+                    <span class="text-agri-600 font-extrabold text-sm">{completedDispatchData.dispatchId}</span>
+                  </div>
+                  <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+                    <span class="text-gray-500">{t('payoutLabel')}</span>
+                    <span class="text-gray-900 font-extrabold text-base">₹3,72,000 (Escrow Released 🏦)</span>
+                  </div>
+                  <div class="flex justify-between items-center border-b border-gray-200 pb-3">
+                    <span class="text-gray-500">{t('deliveryLocLabel')}</span>
+                    <span class="text-gray-900 font-extrabold">{completedDispatchData.destination}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-500">{t('digitalTrailLabel')}</span>
+                    <span class="text-gray-500 font-mono">0x9921a8f7e2c91b40</span>
+                  </div>
+                </div>
+
+                {/* Ratings & Feedback Loop */}
+                <div class="space-y-3 bg-harvest-50 p-4 rounded-2xl border border-harvest-200 text-center">
+                  <div class="text-xs font-black text-harvest-900 uppercase">{t('rateExp')}</div>
+                  <div class="flex justify-center gap-2 text-2xl cursor-pointer">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span key={star} onClick={() => setRatingStars(star)} class={star <= ratingStars ? 'text-harvest-500' : 'text-gray-300'}>★</span>
+                    ))}
+                  </div>
+                  <p class="text-[11px] text-harvest-800">{t('feedbackSub')}</p>
+                </div>
+
+                {/* Footer Navigation Buttons */}
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                  <a href="/" class="flex-1 bg-gray-900 hover:bg-black text-white font-extrabold py-3.5 rounded-full text-center text-sm transition">
+                    {t('returnHomeBtn')}
+                  </a>
+                  <button onClick={() => setShowEndingCompletionModal(false)} class="flex-1 bg-agri-600 hover:bg-agri-700 text-white font-extrabold py-3.5 rounded-full text-center text-sm shadow transition">
+                    {t('viewPipelineBtn')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. DIGITAL QUALITY CERTIFICATE VIEWER MODAL */}
+          {showCertViewerModal && selectedCertForView && (
+            <div class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+              <div class="bg-white rounded-3xl max-w-xl w-full p-8 shadow-2xl space-y-6 relative border-4 border-agri-600">
+                <button onClick={() => setShowCertViewerModal(false)} class="absolute top-6 right-6 text-2xl text-gray-400 hover:text-gray-700">✕</button>
+                
+                <div class="text-center border-b border-gray-200 pb-4 space-y-1">
+                  <div class="text-3xl">📜</div>
+                  <div class="text-xs font-extrabold text-agri-600 uppercase tracking-widest">Government Agmark Verified</div>
+                  <h3 class="text-2xl font-black text-gray-900">Digital Quality & Grade Certificate</h3>
+                  <div class="text-xs font-mono text-gray-400">Hash: {selectedCertForView.certHash || '0x8f9e7a2b'}</div>
+                </div>
+
+                <div class="space-y-4">
+                  <div class="bg-agri-50 p-4 rounded-2xl border border-agri-200 flex justify-between items-center">
+                    <div>
+                      <div class="text-xs font-bold text-gray-500">Certified Grade</div>
+                      <div class="text-3xl font-black text-agri-700">{selectedCertForView.gradeAssigned}</div>
+                    </div>
+                    <div class="text-right">
+                      <div class="text-xs font-bold text-gray-500">Assigned Inspector</div>
+                      <div class="text-sm font-extrabold text-gray-900">{selectedCertForView.inspector}</div>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-4 text-xs font-bold bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <div>Moisture Content: <span class="text-agri-600 font-extrabold block text-sm">{selectedCertForView.moisturePct}</span></div>
+                    <div>Foreign Matter: <span class="text-agri-600 font-extrabold block text-sm">{selectedCertForView.foreignMatterPct}</span></div>
+                    <div>Commodity: <span class="text-gray-900 font-extrabold block text-sm">{selectedCertForView.crop}</span></div>
+                    <div>Quantity Tested: <span class="text-gray-900 font-extrabold block text-sm">{selectedCertForView.qty} qtl</span></div>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-gray-200 flex items-center justify-between text-xs text-gray-500 font-bold">
+                  <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-agri-500 badge-pulse"></span>
+                    <span>Cryptographically Signed & Audit Logged</span>
+                  </div>
+                  <button onClick={() => showToast('📥 PDF Certificate Downloaded!')} class="bg-gray-900 text-white font-bold px-4 py-2 rounded-full text-xs">
+                    Print / Download PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 3. CREATE LOT MODAL */}
+          {showCreateLotModal && (
+            <div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl space-y-6 relative animate-fadeIn">
+                <button onClick={() => setShowCreateLotModal(false)} class="absolute top-6 right-6 text-2xl text-gray-400 hover:text-gray-700">✕</button>
+                
+                <h3 class="text-2xl font-black text-gray-900">🌾 Publish Crop Lot to Sell</h3>
+                
+                <form onSubmit={handleCreateLot} class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-1">Crop & Variety</label>
+                    <select name="crop" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold">
+                      <option value="Onion (Nashik Red)">🧅 Onion (Nashik Red)</option>
+                      <option value="Tomato (Hybrid)">🍅 Tomato (Hybrid)</option>
+                      <option value="Soybean (Yellow)">🌱 Soybean (Yellow)</option>
+                      <option value="Wheat (Sharbati)">🌾 Wheat (Sharbati)</option>
+                    </select>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs font-black uppercase text-gray-500 mb-1">Quantity</label>
+                      <input type="number" name="qty" defaultValue="150" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-black uppercase text-gray-500 mb-1">Unit</label>
+                      <select name="unit" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold">
+                        <option value="qtl">Quintals (qtl)</option>
+                        <option value="MT">Tonnes (MT)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-1">Expected Price (₹/qtl)</label>
+                    <input type="number" name="expectedPrice" defaultValue="2500" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold" />
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-1">Quality Grade</label>
+                    <select name="grade" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold">
+                      <option value="Grade A+">Grade A+ (Export Quality)</option>
+                      <option value="Grade A">Grade A (Premium Mandi)</option>
+                      <option value="Grade B">Grade B (Standard)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-1">Farm Pickup Location</label>
+                    <input type="text" name="location" defaultValue="Lasalgaon Warehouse #4, Nashik" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold" />
+                  </div>
+
+                  <button type="submit" class="w-full bg-harvest-500 hover:bg-harvest-600 text-harvest-900 font-extrabold py-4 rounded-full shadow-lg text-base">
+                    🚀 Publish Lot to Buyer Network
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* 4. STORAGE BOOKING MODAL */}
+          {showStorageModal && (
+            <div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl space-y-6 relative">
+                <button onClick={() => setShowStorageModal(false)} class="absolute top-6 right-6 text-2xl text-gray-400 hover:text-gray-700">✕</button>
+                
+                <h3 class="text-2xl font-black text-gray-900">📦 Book Warehouse Storage</h3>
+                
+                <form onSubmit={handleBookStorage} class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-1">Select Warehouse Facility</label>
+                    <select name="warehouse" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold">
+                      <option value="Apex Warehousing & ColdStorage (Nashik Hub)">Apex Warehousing & ColdStorage (Nashik Hub)</option>
+                      <option value="MahaAgri State Cold Store (Pune)">MahaAgri State Cold Store (Pune)</option>
+                    </select>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs font-black uppercase text-gray-500 mb-1">Commodity</label>
+                      <input type="text" name="crop" defaultValue="Onion" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-black uppercase text-gray-500 mb-1">Quantity (qtl)</label>
+                      <input type="number" name="qty" defaultValue="100" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-1">Holding Duration (Days)</label>
+                    <input type="number" name="duration" defaultValue="30" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold" />
+                  </div>
+
+                  <button type="submit" class="w-full bg-agri-600 hover:bg-agri-700 text-white font-extrabold py-4 rounded-full shadow-lg text-base">
+                    ✅ Reserve Warehouse Storage Slot
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* 5. QUALITY CERTIFICATE MODAL */}
+          {showQualityCertModal && (
+            <div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl space-y-6 relative">
+                <button onClick={() => setShowQualityCertModal(false)} class="absolute top-6 right-6 text-2xl text-gray-400 hover:text-gray-700">✕</button>
+                
+                <h3 class="text-2xl font-black text-gray-900">🔬 Issue Digital Quality Certificate</h3>
+                
+                <form onSubmit={handleIssueQualityCert} class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-1">Target Lot ID</label>
+                    <input type="text" name="lotId" defaultValue="LOT-1082" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold" />
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs font-black uppercase text-gray-500 mb-1">Moisture %</label>
+                      <input type="text" name="moisture" defaultValue="11.2" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold" />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-black uppercase text-gray-500 mb-1">Foreign Matter %</label>
+                      <input type="text" name="foreignMatter" defaultValue="0.4" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-1">Assigned Grade</label>
+                    <select name="grade" class="w-full p-3.5 border border-gray-300 rounded-xl font-bold">
+                      <option value="Grade A+">Grade A+ (Premium Export)</option>
+                      <option value="Grade A">Grade A (Standard)</option>
+                      <option value="Grade B">Grade B (Processing)</option>
+                    </select>
+                  </div>
+
+                  <button type="submit" class="w-full bg-agri-600 hover:bg-agri-700 text-white font-extrabold py-4 rounded-full shadow-lg text-base">
+                    📜 Generate Signed Certificate
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* 6. MAKE OFFER MODAL */}
+          {showOfferModal && selectedLotForOffer && (
+            <div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+              <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl space-y-6 relative">
+                <button onClick={() => setShowOfferModal(false)} class="absolute top-6 right-6 text-2xl text-gray-400 hover:text-gray-700">✕</button>
+                
+                <h3 class="text-2xl font-black text-gray-900">🤝 Make Purchase Offer for {selectedLotForOffer.id}</h3>
+                <div class="text-xs text-gray-500 font-bold">Crop: {selectedLotForOffer.crop} • Qty: {selectedLotForOffer.qty} {selectedLotForOffer.unit}</div>
+
+                <form onSubmit={handleMakeOffer} class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-black uppercase text-gray-500 mb-1">Offered Price (₹/qtl)</label>
+                    <input type="number" name="offeredPrice" defaultValue={selectedLotForOffer.expectedPrice} class="w-full p-3.5 border border-gray-300 rounded-xl font-bold text-xl text-agri-600" />
+                  </div>
+
+                  <button type="submit" class="w-full bg-harvest-500 hover:bg-harvest-600 text-harvest-900 font-extrabold py-4 rounded-full shadow-lg text-base">
+                    🚀 Submit Purchase Offer to Farmer
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* FOOTER */}
+          <footer class="bg-white border-t border-gray-200 py-8 text-center text-xs font-bold text-gray-400">
+            Smart India Hackathon 2026 • Team Code Catalyst • KrishiSetu Platform
+          </footer>
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

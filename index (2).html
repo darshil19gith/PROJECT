@@ -1,0 +1,1900 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<meta content="#1B5E3B" name="theme-color">
+<meta content="KrishiSetu - Smart market intelligence and buyer-linkage platform for farmers. Compare mandis after transport and storage costs." name="description">
+<title>KrishiSetu | Smart Market Intelligence for Farmers</title>
+<!-- Google Fonts: Inter & Noto Sans Devanagari -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Noto+Sans+Devanagari:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+    /* ------------------------------------------------------------------
+       CSS VARIABLES & THEME SETUP ("Earthy and trustworthy")
+       ------------------------------------------------------------------ */
+    :root {
+      --primary: #1B5E3B;          /* Leaf Green */
+      --primary-hover: #154b2f;
+      --primary-light: #E8F3E8;    /* Soft Green Tint */
+      --primary-focus: rgba(27, 94, 59, 0.35);
+      
+      --cta-yellow: #F2B01E;       /* Turmeric Yellow */
+      --cta-yellow-hover: #dc9e15;
+      --cta-text: #211b06;
+      
+      --terracotta: #C0502D;       /* Deductions, warnings */
+      --terracotta-light: #FCECE8;
+
+      --verdict-green-bg: #E8F7ED;
+      --verdict-green-text: #1B5E3B;
+      --verdict-green-border: #22C55E;
+
+      --verdict-amber-bg: #FEF3C7;
+      --verdict-amber-text: #B45309;
+      --verdict-amber-border: #F59E0B;
+
+      --verdict-red-bg: #FEE2E2;
+      --verdict-red-text: #B91C1C;
+      --verdict-red-border: #EF4444;
+      
+      --bg-page: #FAFAF7;          /* Off-white */
+      --bg-card: #FFFFFF;
+      --bg-card-subtle: #F3F4F0;
+      
+      --text-main: #1C241E;
+      --text-muted: #536458;
+      --text-subtle: #798A7F;
+      
+      --border-subtle: #E2E6E1;
+      --border-card: #D9DFD7;
+      
+      --shadow-sm: 0 2px 6px rgba(27, 94, 59, 0.04);
+      --shadow-md: 0 10px 25px -4px rgba(27, 94, 59, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 20px 35px -8px rgba(27, 94, 59, 0.12), 0 8px 16px -4px rgba(0, 0, 0, 0.04);
+
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 26px;
+      --radius-full: 9999px;
+
+      --font-family: 'Inter', 'Noto Sans Devanagari', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Automatic Dark Mode */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #38A169;
+        --primary-hover: #2F855A;
+        --primary-light: #162B1F;
+        --primary-focus: rgba(56, 161, 105, 0.45);
+        
+        --cta-yellow: #F59E0B;
+        --cta-yellow-hover: #D97706;
+        --cta-text: #111827;
+        
+        --terracotta: #E07A5F;
+        --terracotta-light: #341D17;
+
+        --verdict-green-bg: #132E1D;
+        --verdict-green-text: #68D391;
+        --verdict-green-border: #48BB78;
+
+        --verdict-amber-bg: #35260C;
+        --verdict-amber-text: #FBBF24;
+        --verdict-amber-border: #D97706;
+
+        --verdict-red-bg: #371A1A;
+        --verdict-red-text: #F87171;
+        --verdict-red-border: #DC2626;
+        
+        --bg-page: #121814;
+        --bg-card: #1A231D;
+        --bg-card-subtle: #242F28;
+        
+        --text-main: #F3F6F4;
+        --text-muted: #A3B5A9;
+        --text-subtle: #7D8F83;
+        
+        --border-subtle: #2B3830;
+        --border-card: #344339;
+        
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 10px 25px -4px rgba(0, 0, 0, 0.45);
+        --shadow-lg: 0 20px 35px -8px rgba(0, 0, 0, 0.6);
+      }
+    }
+
+    /* ------------------------------------------------------------------
+       RESET & BASE STYLES
+       ------------------------------------------------------------------ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: env(safe-area-inset-top, 0);
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      padding-left: env(safe-area-inset-left, 0);
+      padding-right: env(safe-area-inset-right, 0);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Accessibility Focus Outline */
+    *:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 3px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1160px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    /* ------------------------------------------------------------------
+       HEADER & NAVIGATION
+       ------------------------------------------------------------------ */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: rgba(250, 250, 247, 0.94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .header {
+        background-color: rgba(18, 24, 20, 0.94);
+      }
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      gap: 16px;
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+    }
+
+    .brand-logo .logo-emoji {
+      font-size: 1.6rem;
+      line-height: 1;
+      transform-origin: center bottom;
+      transition: transform 0.2s ease;
+    }
+
+    .brand-logo:hover .logo-emoji {
+      transform: scale(1.15) rotate(6deg);
+    }
+
+    /* Language Toggle Segmented Control */
+    .lang-switcher {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 4px;
+      gap: 2px;
+    }
+
+    .lang-btn {
+      padding: 6px 14px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: var(--radius-full);
+      min-height: 38px;
+      min-width: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease-in-out;
+    }
+
+    .lang-btn:hover:not(.active) {
+      color: var(--text-main);
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    .lang-btn.active {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(27, 94, 59, 0.25);
+    }
+
+    /* ------------------------------------------------------------------
+       HERO SECTION (Stacked on mobile, 2 columns on desktop)
+       ------------------------------------------------------------------ */
+    .hero-section {
+      padding: 40px 0 56px;
+    }
+
+    @media (min-width: 768px) {
+      .hero-section {
+        padding: 64px 0 80px;
+      }
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    @media (min-width: 820px) {
+      .hero-grid {
+        grid-template-columns: 1.15fr 0.95fr;
+        gap: 52px;
+      }
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    /* Category Pill */
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: var(--radius-full);
+      margin-bottom: 20px;
+      border: 1px solid rgba(27, 94, 59, 0.16);
+    }
+
+    .hero-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      line-height: 1.18;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      margin-bottom: 18px;
+    }
+
+    @media (min-width: 768px) {
+      .hero-title {
+        font-size: 3.1rem;
+      }
+    }
+
+    .highlight-green {
+      color: var(--primary);
+      position: relative;
+      display: inline-block;
+      text-decoration: underline;
+      text-decoration-color: rgba(27, 94, 59, 0.35);
+      text-underline-offset: 4px;
+    }
+
+    .hero-subtext {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+      max-width: 540px;
+    }
+
+    /* Hero CTA Buttons */
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .btn-primary {
+      background-color: var(--cta-yellow);
+      color: var(--cta-text);
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 14px 28px;
+      min-height: 52px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(242, 176, 30, 0.38);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      flex: 1 1 auto;
+      max-width: 260px;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--cta-yellow-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(242, 176, 30, 0.45);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-outline {
+      border: 2px solid var(--border-card);
+      color: var(--text-main);
+      background-color: var(--bg-card);
+      font-weight: 600;
+      font-size: 1.02rem;
+      padding: 14px 26px;
+      min-height: 52px;
+      border-radius: var(--radius-full);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex: 1 1 auto;
+      max-width: 260px;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: var(--primary-light);
+    }
+
+    /* Trust / Feature Micro Chips */
+    .chips-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .feature-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ------------------------------------------------------------------
+       LIVE MARKET TICKER / VERDICT CARD (Hero Right)
+       ------------------------------------------------------------------ */
+    .verdict-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .verdict-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 45px -8px rgba(27, 94, 59, 0.16);
+    }
+
+    /* Ticker Live Header Bar */
+    .ticker-live-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 14px;
+      font-size: 0.78rem;
+    }
+
+    .live-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+    }
+
+    .live-pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22C55E;
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.35);
+      animation: pulse 1.8s infinite ease-in-out;
+    }
+
+    .feed-clock-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-subtle);
+      font-size: 0.75rem;
+    }
+
+    .clock-icon {
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    /* Crop Switcher Segment Tabs */
+    .crop-tabs-wrap {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 16px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .crop-tabs-wrap::-webkit-scrollbar {
+      display: none;
+    }
+
+    .crop-tab-btn {
+      flex: 1 1 0;
+      min-width: 66px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border-radius: var(--radius-full);
+      background-color: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.18s ease;
+    }
+
+    .crop-tab-btn:hover {
+      border-color: var(--primary);
+      color: var(--text-main);
+    }
+
+    .crop-tab-btn.active {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(27, 94, 59, 0.28);
+    }
+
+    /* Auto-cycle progress bar */
+    .ticker-progress-track {
+      width: 100%;
+      height: 3px;
+      background-color: var(--border-subtle);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .ticker-progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: var(--cta-yellow);
+      border-radius: var(--radius-full);
+      transition: width 0.1s linear;
+    }
+
+    /* Animated Ticker Body Container */
+    .ticker-body {
+      transition: opacity 0.24s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transform-origin: top center;
+    }
+
+    .ticker-body.fade-out {
+      opacity: 0.15;
+      transform: translateY(4px);
+    }
+
+    .verdict-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 16px;
+    }
+
+    .crop-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--text-main);
+    }
+
+    .sample-tag {
+      background-color: var(--bg-card-subtle);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 9px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-subtle);
+    }
+
+    /* Traffic-Light Status Badge */
+    .verdict-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: var(--radius-full);
+      padding: 7px 16px;
+      margin-bottom: 16px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      letter-spacing: 0.04em;
+      transition: all 0.25s ease;
+    }
+
+    .verdict-status.status-sell {
+      background-color: var(--verdict-green-bg);
+      color: var(--verdict-green-text);
+      border: 1.5px solid var(--verdict-green-border);
+    }
+
+    .verdict-status.status-wait {
+      background-color: var(--verdict-amber-bg);
+      color: var(--verdict-amber-text);
+      border: 1.5px solid var(--verdict-amber-border);
+    }
+
+    .verdict-status.status-hold {
+      background-color: var(--verdict-red-bg);
+      color: var(--verdict-red-text);
+      border: 1.5px solid var(--verdict-red-border);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .status-sell .status-dot {
+      background-color: #22C55E;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+    }
+
+    .status-wait .status-dot {
+      background-color: #F59E0B;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+    }
+
+    .status-hold .status-dot {
+      background-color: #EF4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.8; }
+    }
+
+    /* Big Net Price Display + Trend */
+    .net-price-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .net-price-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .net-price-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+
+    .net-price-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .unit-suffix {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: normal;
+    }
+
+    /* Price Trend Badge */
+    .price-trend-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .price-trend-badge.up {
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid rgba(27, 94, 59, 0.2);
+    }
+
+    .price-trend-badge.down {
+      background-color: var(--terracotta-light);
+      color: var(--terracotta);
+      border: 1px solid rgba(192, 80, 45, 0.2);
+    }
+
+    /* Sparkline & Fluctuation Meta */
+    .mandi-range-bar {
+      background-color: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.8rem;
+    }
+
+    .range-data-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .range-label {
+      font-size: 0.72rem;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+
+    .range-values {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .arrivals-data-col {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .arrivals-value {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Deduction Breakdown List */
+    .breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background-color: var(--bg-card-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .breakdown-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .breakdown-row.gross {
+      font-weight: 600;
+    }
+
+    .breakdown-row.deduction {
+      color: var(--terracotta);
+      font-weight: 600;
+    }
+
+    .verdict-footer {
+      font-size: 0.75rem;
+      color: var(--text-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 6px;
+      gap: 8px;
+    }
+
+    /* ------------------------------------------------------------------
+       ROLE PICKER ("I am a...")
+       ------------------------------------------------------------------ */
+    .role-section {
+      padding: 56px 0;
+      background-color: var(--bg-page);
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 36px;
+    }
+
+    .section-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtext {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    @media (min-width: 760px) {
+      .role-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+      }
+    }
+
+    .role-card {
+      background-color: var(--bg-card);
+      border: 2px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 26px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 170px;
+      justify-content: center;
+    }
+
+    .role-card:hover {
+      border-color: rgba(27, 94, 59, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .role-card.selected {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+      box-shadow: 0 0 0 3px var(--primary-focus), var(--shadow-md);
+    }
+
+    .role-icon {
+      font-size: 2.8rem;
+      line-height: 1;
+      margin-bottom: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    .role-card:hover .role-icon {
+      transform: scale(1.1);
+    }
+
+    .role-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .role-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .role-check-indicator {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-card);
+      font-size: 0.75rem;
+      color: transparent;
+      transition: all 0.2s ease;
+    }
+
+    .role-card.selected .role-check-indicator {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .role-action-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .role-continue-btn {
+      background-color: var(--cta-yellow);
+      color: var(--cta-text);
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 16px 48px;
+      min-height: 52px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 4px 16px rgba(242, 176, 30, 0.4);
+      transition: all 0.2s ease;
+      min-width: 220px;
+    }
+
+    .role-continue-btn:hover {
+      background-color: var(--cta-yellow-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(242, 176, 30, 0.5);
+    }
+
+    .selection-toast {
+      font-size: 0.9rem;
+      color: var(--primary);
+      font-weight: 600;
+      min-height: 24px;
+    }
+
+    /* ------------------------------------------------------------------
+       HOW IT WORKS (3 Step Cards)
+       ------------------------------------------------------------------ */
+    .how-it-works-section {
+      padding: 60px 0 72px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 760px) {
+      .steps-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 26px;
+      }
+    }
+
+    .step-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      position: relative;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .step-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(27, 94, 59, 0.3);
+    }
+
+    .step-badge {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--text-subtle);
+      background-color: var(--bg-card-subtle);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-icon-wrap {
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radius-md);
+      background-color: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      margin-bottom: 22px;
+      line-height: 1;
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ------------------------------------------------------------------
+       PILOT BANNER (Nashik onion & tomato context)
+       ------------------------------------------------------------------ */
+    .pilot-banner {
+      background-color: var(--bg-card-subtle);
+      border: 1px dashed var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 18px 24px;
+      margin-top: 48px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .pilot-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pilot-tag {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .pilot-text {
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .crops-tag {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ------------------------------------------------------------------
+       FOOTER
+       ------------------------------------------------------------------ */
+    .footer {
+      margin-top: auto;
+      background-color: var(--bg-card);
+      border-top: 1px solid var(--border-subtle);
+      padding: 32px 0;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (min-width: 640px) {
+      .footer-content {
+        flex-direction: row;
+        gap: 16px;
+      }
+    }
+
+    .footer-divider {
+      display: none;
+    }
+
+    @media (min-width: 640px) {
+      .footer-divider {
+        display: inline;
+        color: var(--text-subtle);
+      }
+    }
+
+    .footer-highlight {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+<!-- ==============================================================
+       1. HEADER SECTION
+       ============================================================== -->
+<header class="header">
+<div class="container header-inner"><!-- Logo -->
+<a aria-label="KrishiSetu Home" class="brand-logo" href="#">
+<span aria-hidden="true" class="logo-emoji">🌾</span>
+<span class="">KrishiSetu</span>
+</a>
+<!-- Header Actions: Language Switcher + Auth Buttons -->
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end;">
+  <nav aria-label="Language Selector" class="lang-switcher">
+    <button aria-label="Select English" class="lang-btn active" data-lang="en" type="button" aria-pressed="true">EN</button>
+    <button aria-label="हिंदी भाषा चुनें" class="lang-btn" data-lang="hi" type="button" aria-pressed="false">हिंदी</button>
+    <button aria-label="मराठी भाषा निवडा" class="lang-btn" data-lang="mr" type="button" aria-pressed="false">मराठी</button>
+  </nav>
+  <div style="display: inline-flex; align-items: center; gap: 8px;">
+    <a href="#login" style="min-height: 40px; padding: 8px 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 600; color: var(--text-main); border-radius: var(--radius-full); transition: all 0.2s ease; border: 1px solid transparent;" onmouseover="this.style.backgroundColor='var(--bg-card-subtle)'; this.style.borderColor='var(--border-subtle)';" onmouseout="this.style.backgroundColor='transparent'; this.style.borderColor='transparent';">
+      <span data-i18n="navLogIn" class="">Log In</span>
+    </a>
+    <a href="#register" style="min-height: 40px; padding: 8px 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; color: #FFFFFF; background-color: var(--primary); border-radius: var(--radius-full); transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(27, 94, 59, 0.25);" onmouseover="this.style.backgroundColor='var(--primary-hover)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.backgroundColor='var(--primary)'; this.style.transform='translateY(0)';">
+      <span data-i18n="navRegister" class="">Register</span>
+    </a>
+  </div>
+</div></div>
+</header>
+<main>
+<!-- ==============================================================
+         2. HERO SECTION (Two columns on desktop, stacked on mobile)
+         ============================================================== -->
+<section class="hero-section">
+<div class="container hero-grid">
+<!-- Left Column: Copy & CTAs -->
+<div class="hero-content">
+<!-- Pill -->
+<div class="pill-badge" id="heroPill">
+<span class="">🌱</span>
+<span data-i18n="heroPill" class="">Smart market intelligence for farmers</span>
+</div>
+<!-- H1 with highlight -->
+<h1 class="hero-title" id="heroH1">
+<span data-i18n="heroH1Start" class="">Sell at the best </span><span class="highlight-green" data-i18n="heroH1Highlight">net price.</span>
+</h1>
+<!-- Subtext -->
+<p class="hero-subtext" data-i18n="heroSubtext" id="heroSubtext">KrishiSetu compares mandis after transport and storage costs, then tells you: sell now, wait, or hold.</p>
+<!-- Buttons -->
+<div class="cta-group">
+<a class="btn-primary" href="#register" id="btnGetStarted">Get started →</a>
+<a class="btn-outline" data-i18n="btnHowItWorks" href="#howItWorks" id="btnHowItWorks">See how it works</a>
+</div><div style="margin-top: -16px; margin-bottom: 24px; font-size: 0.92rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+  <span data-i18n="heroAlreadyAccount" class="">Already have an account?</span>
+  <a href="#login" style="font-weight: 700; color: var(--primary); text-decoration: underline; text-underline-offset: 3px; display: inline-flex; align-items: center; min-height: 36px; padding: 2px 6px; border-radius: 6px;" data-i18n="heroLogInLink" class="">Log In</a>
+</div>
+<!-- Trust / Feature Chips -->
+<div aria-label="Key features" class="chips-group">
+<span class="feature-chip" data-i18n="chipVoice">🗣️ Voice &amp; local language</span>
+<span class="feature-chip" data-i18n="chipOffline">📶 Works offline</span>
+<span class="feature-chip" data-i18n="chipSms">💬 SMS alerts</span>
+</div>
+</div>
+<!-- Right Column: Interactive Live Market Ticker & Verdict Card -->
+<div class="hero-card-col">
+<div aria-label="Active Live Market Intelligence Card" class="verdict-card">
+<!-- Live Ticker Header Bar -->
+<div class="ticker-live-bar">
+<div class="live-status-pill">
+<span aria-hidden="true" class="live-pulse-dot"></span>
+<span data-i18n="liveBadge" class="">Live AGMARKNET Feed</span>
+</div>
+<div class="feed-clock-meta">
+<span aria-hidden="true" class="clock-icon">⏱️</span>
+<span data-i18n="updatedJustNow" id="tickerClock" class="">Updated: Just now</span>
+</div>
+</div>
+<!-- Quick-Select Tabs for Crops -->
+<div aria-label="Quick Select Crop" class="crop-tabs-wrap" role="tablist">
+<button aria-selected="false" class="crop-tab-btn" data-crop="onion" role="tab" type="button">
+<span class="">🧅</span> <span data-i18n="tabOnion" class="">Onion</span>
+</button>
+<button aria-selected="true" class="crop-tab-btn active" data-crop="tomato" role="tab" type="button">
+<span class="">🍅</span> <span data-i18n="tabTomato" class="">Tomato</span>
+</button>
+<button aria-selected="false" class="crop-tab-btn" data-crop="potato" role="tab" type="button">
+<span class="">🥔</span> <span data-i18n="tabPotato" class="">Potato</span>
+</button>
+<button aria-selected="false" class="crop-tab-btn" data-crop="soybean" role="tab" type="button">
+<span class="">🌱</span> <span data-i18n="tabSoybean" class="">Soybean</span>
+</button>
+</div>
+<!-- Auto-cycle Progress Line -->
+<div class="ticker-progress-track" title="Next crop refresh indicator">
+<div class="ticker-progress-bar" id="tickerProgressBar" style="width: 16.25%;"></div>
+</div>
+<!-- Animated Ticker Body -->
+<div class="ticker-body" id="tickerBody">
+<div class="verdict-top-bar">
+<div class="crop-meta">
+<span id="cardCropEmoji" class="">🍅</span>
+<span id="cardCropTitle" class="">Tomato · Pimpalgaon</span>
+</div>
+<span class="sample-tag" data-i18n="sampleLiveTag">Live Simulation</span>
+</div>
+<!-- Traffic Light Status (Sell / Wait / Hold) -->
+<div class="verdict-status status-wait" id="verdictStatusBadge">
+<span aria-hidden="true" class="status-dot"></span>
+<span id="verdictStatusText" class="">WAIT / HOLD</span>
+</div>
+<!-- Big Net Price Display + Daily Trend -->
+<div class="net-price-row">
+<div class="net-price-box">
+<div class="net-price-label" data-i18n="netPriceLabel">Net price</div>
+<div class="net-price-value">
+<span id="netPriceValue" class="">₹1,350</span> <span class="unit-suffix" data-i18n="perQuintal">/ quintal</span>
+</div>
+</div>
+<div class="price-trend-badge down" id="priceTrendBadge">
+<span id="priceTrendArrow" class="">▼</span>
+<span id="priceTrendPercent" class="">-1.8%</span>
+</div>
+</div>
+<!-- Fluctuation Range & Arrivals -->
+<div class="mandi-range-bar">
+<div class="range-data-col">
+<span class="range-label" data-i18n="dayRangeLabel">Day Range</span>
+<span class="range-values" id="dayRangeValue">₹1,300 – ₹1,520</span>
+</div>
+<div class="arrivals-data-col">
+<span class="range-label" data-i18n="arrivalsLabel">Arrivals</span>
+<span class="arrivals-value" id="arrivalsValue">2,180 qtl</span>
+</div>
+</div>
+<!-- Deductions Breakdown -->
+<div class="breakdown-list">
+<div class="breakdown-row gross">
+<span data-i18n="mandiPriceLabel" class="">Mandi price</span>
+<span id="mandiGrossValue" class="">₹1,450</span>
+</div>
+<div class="breakdown-row deduction">
+<span data-i18n="transportLabel" class="">Transport</span>
+<span id="transportValue" class="">− ₹85</span>
+</div>
+<div class="breakdown-row deduction">
+<span data-i18n="storageLabel" class="">Storage</span>
+<span id="storageValue" class="">− ₹15</span>
+</div>
+</div>
+<!-- Footer Disclaimer -->
+<div class="verdict-footer">
+<span data-i18n="cardFooterSource" class="">Sample AGMARKNET live simulation</span>
+<span id="pilotRegionTag" class="">📍 Nashik Pilot</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ==============================================================
+         3. ROLE PICKER ("I am a...")
+         ============================================================== -->
+<section class="role-section" id="roleSection">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title" data-i18n="rolePickerTitle">I am a…</h2>
+      <p class="section-subtext" data-i18n="rolePickerSubtext">Choose your profile to personalize market insights and buyer matches.</p>
+    </div>
+    <div class="role-grid" role="radiogroup" aria-label="Select User Role">
+      <!-- Role 1: Farmer -->
+      <div class="role-card selected" data-role="farmer" role="radio" aria-checked="true" tabindex="0">
+        <div class="role-check-indicator">✓</div>
+        <div class="role-icon">🧑‍🌾</div>
+        <h3 class="role-title" data-i18n="roleFarmer">Farmer</h3>
+        <p class="role-subtitle" data-i18n="roleFarmerSub">Sell crops & discover net rates</p>
+      </div>
+      <!-- Role 2: Buyer -->
+      <div class="role-card" data-role="buyer" role="radio" aria-checked="false" tabindex="0">
+        <div class="role-check-indicator">✓</div>
+        <div class="role-icon">🏬</div>
+        <h3 class="role-title" data-i18n="roleBuyer">Buyer</h3>
+        <p class="role-subtitle" data-i18n="roleBuyerSub">Source directly from farms & FPOs</p>
+      </div>
+      <!-- Role 3: FPO -->
+      <div class="role-card" data-role="fpo" role="radio" aria-checked="false" tabindex="0">
+        <div class="role-check-indicator">✓</div>
+        <div class="role-icon">🚜</div>
+        <h3 class="role-title" data-i18n="roleFpo">FPO</h3>
+        <p class="role-subtitle" data-i18n="roleFpoSub">Aggregate produce & bulk contracts</p>
+      </div>
+    </div>
+    <div class="role-action-wrap">
+      <button class="role-continue-btn" id="btnContinueRole" type="button" data-i18n="btnContinue">Continue</button>
+      <div class="selection-toast" id="selectionToast" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================================================
+         4. HOW IT WORKS (3 Step Cards)
+         ============================================================== -->
+<section aria-labelledby="howItWorksTitle" class="how-it-works-section" id="howItWorks">
+<div class="container">
+<div class="section-header">
+<h2 class="section-title" data-i18n="howItWorksTitle" id="howItWorksTitle">How it works</h2>
+<p class="section-subtext" data-i18n="howItWorksSubtext">Three simple steps to maximize your agricultural revenue.</p>
+</div>
+<div class="steps-grid">
+<!-- Step 1 -->
+<div class="step-card">
+<span class="step-badge">1</span>
+<div aria-hidden="true" class="step-icon-wrap">🌱</div>
+<h3 class="step-title" data-i18n="step1Title">Pick your crop</h3>
+<p class="step-desc" data-i18n="step1Desc">Choose your crop, harvest quantity, and farm location with easy voice or tap input.</p>
+</div>
+<!-- Step 2 -->
+<div class="step-card">
+<span class="step-badge">2</span>
+<div aria-hidden="true" class="step-icon-wrap">🧮</div>
+<h3 class="step-title" data-i18n="step2Title">See the net price</h3>
+<p class="step-desc" data-i18n="step2Desc">Mandis ranked after transport and storage deductions so you see your actual take-home earnings.</p>
+</div>
+<!-- Step 3 -->
+<div class="step-card">
+<span class="step-badge">3</span>
+<div aria-hidden="true" class="step-icon-wrap">✅</div>
+<h3 class="step-title" data-i18n="step3Title">Sell with confidence</h3>
+<p class="step-desc" data-i18n="step3Desc">Get a clear sell, wait, or hold verdict and directly match with verified local and institutional buyers.</p>
+</div>
+</div>
+<!-- Pilot context info strip -->
+<div class="pilot-banner">
+<div class="pilot-info">
+<span class="pilot-tag">Pilot Region</span>
+<span class="pilot-text" data-i18n="pilotDesc">Nashik, Maharashtra — empowering local growers with live mandi intelligence</span>
+</div>
+<div class="crops-tag">
+<span aria-hidden="true" class="">🧅 🍅</span>
+<span data-i18n="pilotCrops" class="">Focus Crops: Onion &amp; Tomato</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ==============================================================
+       5. FOOTER
+       ============================================================== -->
+<footer class="footer">
+<div class="container footer-content">
+<span class="footer-highlight">Smart India Hackathon 2026</span>
+<span class="footer-divider">·</span>
+<span class="">Team Code Catalyst (ID 118692)</span>
+<span class="footer-divider">·</span>
+<span class="">Problem Statement 26132</span>
+</div>
+</footer>
+<!-- ==============================================================
+       INTERACTIVE LOGIC: I18N, LIVE CROP TICKER & ROLE SELECTION
+       ============================================================== -->
+<script>
+    (function () {
+      'use strict';
+
+      // -------------------------------------------------------------
+      // TRANSLATION DICTIONARIES
+      // -------------------------------------------------------------
+      const translations = {
+        en: {
+          heroPill: "Smart market intelligence for farmers",
+          heroH1Start: "Sell at the best ",
+          heroH1Highlight: "net price.",
+          heroSubtext: "KrishiSetu compares mandis after transport and storage costs, then tells you: sell now, wait, or hold.",
+          btnGetStarted: "Get started →",
+          btnHowItWorks: "See how it works",
+          heroAlreadyAccount: "Already have an account?",
+          heroLogInLink: "Log In",
+          navLogIn: "Log In",
+          navRegister: "Register",
+          chipVoice: "🗣️ Voice & local language",
+          chipOffline: "📶 Works offline",
+          chipSms: "💬 SMS alerts",
+          liveBadge: "Live AGMARKNET Feed",
+          updatedJustNow: "Updated: Just now",
+          updated2mAgo: "Updated: 2m ago",
+          updated1mAgo: "Updated: 1m ago",
+          tabOnion: "Onion",
+          tabTomato: "Tomato",
+          tabPotato: "Potato",
+          tabSoybean: "Soybean",
+          sampleLiveTag: "Live Simulation",
+          verdictSell: "SELL NOW",
+          verdictWait: "WAIT / HOLD",
+          verdictHold: "HOLD & STORE",
+          netPriceLabel: "Net price",
+          perQuintal: "/ quintal",
+          dayRangeLabel: "Day Range",
+          arrivalsLabel: "Arrivals",
+          mandiPriceLabel: "Mandi price",
+          transportLabel: "Transport",
+          storageLabel: "Storage",
+          cardFooterSource: "Sample AGMARKNET live simulation",
+          pilotRegionTag: "📍 Nashik Pilot",
+          rolePickerTitle: "I am a…",
+          rolePickerSubtext: "Choose your profile to personalize market insights and buyer matches.",
+          roleFarmer: "Farmer",
+          roleFarmerSub: "Sell crops & discover net rates",
+          roleBuyer: "Buyer",
+          roleBuyerSub: "Source directly from farms & FPOs",
+          roleFpo: "FPO",
+          roleFpoSub: "Aggregate produce & bulk contracts",
+          btnContinue: "Continue",
+          howItWorksTitle: "How it works",
+          howItWorksSubtext: "Three simple steps to maximize your agricultural revenue.",
+          step1Title: "Pick your crop",
+          step1Desc: "Choose your crop, harvest quantity, and farm location with easy voice or tap input.",
+          step2Title: "See the net price",
+          step2Desc: "Mandis ranked after transport and storage deductions so you see your actual take-home earnings.",
+          step3Title: "Sell with confidence",
+          step3Desc: "Get a clear sell, wait, or hold verdict and directly match with verified local and institutional buyers.",
+          pilotDesc: "Nashik, Maharashtra — empowering local growers with live mandi intelligence",
+          pilotCrops: "Focus Crops: Onion & Tomato",
+          continueFeedback: "Selected: "
+        },
+        hi: {
+          heroPill: "किसानों के लिए स्मार्ट बाज़ार जानकारी",
+          heroH1Start: "सबसे अच्छे ",
+          heroH1Highlight: "नेट भाव पर बेचें।",
+          heroSubtext: "कृषिसेतु परिवहन और भंडारण खर्च के बाद मंडियों की तुलना करता है और बताता है: अभी बेचें, रुकें या रोकें।",
+          btnGetStarted: "शुरू करें →",
+          btnHowItWorks: "यह कैसे काम करता है",
+          heroAlreadyAccount: "क्या आपका पहले से खाता है?",
+          heroLogInLink: "लॉग इन करें",
+          navLogIn: "लॉग इन",
+          navRegister: "पंजीकरण",
+          chipVoice: "🗣️ आवाज़ और स्थानीय भाषा",
+          chipOffline: "📶 बिना इंटरनेट चलेगा",
+          chipSms: "💬 एसएमएस अलर्ट",
+          liveBadge: "लाइव एगमार्कनेट फ़ीड",
+          updatedJustNow: "अपडेट: अभी-अभी",
+          updated2mAgo: "अपडेट: 2 मिनट पहले",
+          updated1mAgo: "अपडेट: 1 मिनट पहले",
+          tabOnion: "प्याज",
+          tabTomato: "टमाटर",
+          tabPotato: "आलू",
+          tabSoybean: "सोयाबीन",
+          sampleLiveTag: "लाइव सिमुलेशन",
+          verdictSell: "अभी बेचें",
+          verdictWait: "रुकें / प्रतीक्षा",
+          verdictHold: "रोकें और स्टोर करें",
+          netPriceLabel: "नेट भाव",
+          perQuintal: "/ क्विंटल",
+          dayRangeLabel: "आज का भाव दायरा",
+          arrivalsLabel: "आवक",
+          mandiPriceLabel: "मंडी भाव",
+          transportLabel: "परिवहन",
+          storageLabel: "भंडारण",
+          cardFooterSource: "नमूना एगमार्कनेट लाइव सिमुलेशन",
+          pilotRegionTag: "📍 नासिक पायलट",
+          rolePickerTitle: "मैं हूँ…",
+          rolePickerSubtext: "अपनी प्रोफ़ाइल चुनें ताकि सही बाज़ार जानकारी और खरीदार मिल सकें।",
+          roleFarmer: "किसान",
+          roleFarmerSub: "फसल बेचें और नेट भाव जानें",
+          roleBuyer: "खरीदार",
+          roleBuyerSub: "किसानों और एफपीओ से सीधे खरीदें",
+          roleFpo: "एफपीओ",
+          roleFpoSub: "सामूहिक उत्पाद और बड़े सौदे",
+          btnContinue: "आगे बढ़ें",
+          howItWorksTitle: "यह कैसे काम करता है",
+          howItWorksSubtext: "अपनी कृषि आय बढ़ाने के लिए तीन आसान चरण।",
+          step1Title: "फसल चुनें",
+          step1Desc: "फसल, मात्रा और अपना स्थान चुनें — आवाज़ या टच से।",
+          step2Title: "नेट भाव देखें",
+          step2Desc: "परिवहन और भंडारण खर्च घटाकर मंडियों की वास्तविक रैंकिंग।",
+          step3Title: "विश्वास के साथ बेचें",
+          step3Desc: "अभी बेचें, रुकें या रोकें का स्पष्ट सुझाव पाएं और खरीदारों से जुड़ें।",
+          pilotDesc: "नासिक, महाराष्ट्र — स्थानीय किसानों को सटीक बाज़ार निर्णय शक्ति",
+          pilotCrops: "मुख्य फसलें: प्याज और टमाटर",
+          continueFeedback: "चुना गया: "
+        },
+        mr: {
+          heroPill: "शेतकऱ्यांसाठी स्मार्ट बाजार माहिती",
+          heroH1Start: "सर्वोत्तम ",
+          heroH1Highlight: "निव्वळ भावात विका.",
+          heroSubtext: "कृषिसेतू वाहतूक आणि साठवणूक खर्चानंतर बाजार समित्यांची तुलना करते आणि सांगते: आता विका, थांबा किंवा साठवा.",
+          btnGetStarted: "सुरू करा →",
+          btnHowItWorks: "हे कसे काम करते",
+          heroAlreadyAccount: "तुमचे खाते आधीच आहे का?",
+          heroLogInLink: "लॉग इन करा",
+          navLogIn: "लॉग इन",
+          navRegister: "नोंदणी",
+          chipVoice: "🗣️ आवाज आणि स्थानिक भाषा",
+          chipOffline: "📶 ऑफलाइन काम करते",
+          chipSms: "💬 एसएमएस सूचना",
+          liveBadge: "थेट ॲगमार्कनेट फीड",
+          updatedJustNow: "अपडेट: नुकतेच",
+          updated2mAgo: "अपडेट: २ मिनिटांपूर्वी",
+          updated1mAgo: "अपडेट: १ मिनिटापूर्वी",
+          tabOnion: "कांदा",
+          tabTomato: "टोमॅटो",
+          tabPotato: "बटाटा",
+          tabSoybean: "सोयाबीन",
+          sampleLiveTag: "थेट सिम्युलेशन",
+          verdictSell: "आता विका",
+          verdictWait: "थांबा / प्रतीक्षा",
+          verdictHold: "साठवा आणि रोखा",
+          netPriceLabel: "निव्वळ भाव",
+          perQuintal: "/ क्विंटल",
+          dayRangeLabel: "आजचा दर टप्पा",
+          arrivalsLabel: "आवक",
+          mandiPriceLabel: "बाजार भाव",
+          transportLabel: "वाहतूक",
+          storageLabel: "साठवणूक",
+          cardFooterSource: "नमुना ॲगमार्कनेट थेट सिम्युलेशन",
+          pilotRegionTag: "📍 नाशिक पायलट",
+          rolePickerTitle: "मी आहे…",
+          rolePickerSubtext: "योग्य बाजार माहिती आणि थेट खरेदीदारांसाठी आपली भूमिका निवडा.",
+          roleFarmer: "शेतकरी",
+          roleFarmerSub: "माल विका आणि निव्वळ भाव मिळवा",
+          roleBuyer: "खरेदीदार",
+          roleBuyerSub: "शेतकरी व एफपीओकडून थेट खरेदी करा",
+          roleFpo: "एफपीओ",
+          roleFpoSub: "एकत्रित शेतमाल व मोठे व्यवहार",
+          btnContinue: "पुढे जा",
+          howItWorksTitle: "हे कसे काम करते",
+          howItWorksSubtext: "जास्तीत जास्त नफा मिळवण्यासाठी तीन सोप्या पायऱ्या.",
+          step1Title: "पीक निवडा",
+          step1Desc: "आपले पीक, प्रमाण आणि गावाचे ठिकाण सहज निवडा किंवा बोला.",
+          step2Title: "निव्वळ भाव पाहा",
+          step2Desc: "वाहतूक आणि साठवणूक खर्च वजा करून बाजारांची खरी क्रमवारी.",
+          step3Title: "विश्वासाने विक्री करा",
+          step3Desc: "आता विका, थांबा किंवा साठवा याचा स्पष्ट सल्ला आणि खरेदीदार जोडणी.",
+          pilotDesc: "नाशिक, महाराष्ट्र — स्थानिक शेतकऱ्यांसाठी अचूक बाजार निर्णय",
+          pilotCrops: "मुख्य पिके: कांदा व टोमॅटो",
+          continueFeedback: "निवडले: "
+        }
+      };
+
+      // -------------------------------------------------------------
+      // CROP DATA FOR LIVE TICKER SIMULATION
+      // -------------------------------------------------------------
+      const cropDatasets = [
+        {
+          key: 'onion',
+          emoji: '🧅',
+          titles: {
+            en: 'Onion · Lasalgaon',
+            hi: 'प्याज · लासलगांव मंडी',
+            mr: 'कांदा · लासलगाव बाजार'
+          },
+          netPrice: '₹1,990',
+          mandiPrice: '₹2,100',
+          transport: '− ₹110',
+          storage: '− ₹0',
+          verdictType: 'sell', // sell, wait, hold
+          trendDirection: 'up',
+          trendText: '+4.2%',
+          range: '₹1,950 – ₹2,150',
+          arrivals: {
+            en: '3,420 qtl',
+            hi: '3,420 क्विंटल',
+            mr: '3,420 क्विंटल'
+          }
+        },
+        {
+          key: 'tomato',
+          emoji: '🍅',
+          titles: {
+            en: 'Tomato · Pimpalgaon',
+            hi: 'टमाटर · पिंपलगांव मंडी',
+            mr: 'टोमॅटो · पिंपळगाव बाजार'
+          },
+          netPrice: '₹1,350',
+          mandiPrice: '₹1,450',
+          transport: '− ₹85',
+          storage: '− ₹15',
+          verdictType: 'wait',
+          trendDirection: 'down',
+          trendText: '-1.8%',
+          range: '₹1,300 – ₹1,520',
+          arrivals: {
+            en: '2,180 qtl',
+            hi: '2,180 क्विंटल',
+            mr: '2,180 क्विंटल'
+          }
+        },
+        {
+          key: 'potato',
+          emoji: '🥔',
+          titles: {
+            en: 'Potato · Nashik APMC',
+            hi: 'आलू · नासिक मुख्य मंडी',
+            mr: 'बटाटा · नाशिक कृषी उत्पन्न बाजार'
+          },
+          netPrice: '₹1,565',
+          mandiPrice: '₹1,680',
+          transport: '− ₹95',
+          storage: '− ₹20',
+          verdictType: 'sell',
+          trendDirection: 'up',
+          trendText: '+2.5%',
+          range: '₹1,540 – ₹1,720',
+          arrivals: {
+            en: '1,890 qtl',
+            hi: '1,890 क्विंटल',
+            mr: '1,890 क्विंटल'
+          }
+        },
+        {
+          key: 'soybean',
+          emoji: '🌱',
+          titles: {
+            en: 'Soybean · Malegaon',
+            hi: 'सोयाबीन · मालेगांव मंडी',
+            mr: 'सोयाबीन · मालेगाव बाजार'
+          },
+          netPrice: '₹4,450',
+          mandiPrice: '₹4,650',
+          transport: '− ₹140',
+          storage: '− ₹60',
+          verdictType: 'hold',
+          trendDirection: 'down',
+          trendText: '-3.1%',
+          range: '₹4,400 – ₹4,780',
+          arrivals: {
+            en: '4,150 qtl',
+            hi: '4,150 क्विंटल',
+            mr: '4,150 क्विंटल'
+          }
+        }
+      ];
+
+      // -------------------------------------------------------------
+      // LOCALSTORAGE & STATE SETUP
+      // -------------------------------------------------------------
+      function getStoredLanguage() {
+        try {
+          return localStorage.getItem('krishisetu_lang') || 'en';
+        } catch (e) {
+          console.warn('Storage unavailable, defaulting to English:', e);
+          return 'en';
+        }
+      }
+
+      function setStoredLanguage(lang) {
+        try {
+          localStorage.setItem('krishisetu_lang', lang);
+        } catch (e) {
+          console.warn('Unable to save language preference:', e);
+        }
+      }
+
+      let currentLang = getStoredLanguage();
+      let currentCropIndex = 0;
+      let cycleTimer = null;
+      let progressTimer = null;
+      const CYCLE_INTERVAL = 4000; // 4 seconds auto cycle
+      const PROGRESS_STEP = 50;
+      let progressElapsed = 0;
+
+      // DOM Elements for Card
+      const cardCropEmoji = document.getElementById('cardCropEmoji');
+      const cardCropTitle = document.getElementById('cardCropTitle');
+      const verdictStatusBadge = document.getElementById('verdictStatusBadge');
+      const verdictStatusText = document.getElementById('verdictStatusText');
+      const netPriceValue = document.getElementById('netPriceValue');
+      const priceTrendBadge = document.getElementById('priceTrendBadge');
+      const priceTrendArrow = document.getElementById('priceTrendArrow');
+      const priceTrendPercent = document.getElementById('priceTrendPercent');
+      const dayRangeValue = document.getElementById('dayRangeValue');
+      const arrivalsValue = document.getElementById('arrivalsValue');
+      const mandiGrossValue = document.getElementById('mandiGrossValue');
+      const transportValue = document.getElementById('transportValue');
+      const storageValue = document.getElementById('storageValue');
+      const tickerBody = document.getElementById('tickerBody');
+      const tickerClock = document.getElementById('tickerClock');
+      const tickerProgressBar = document.getElementById('tickerProgressBar');
+      const cropTabButtons = document.querySelectorAll('.crop-tab-btn');
+
+      // -------------------------------------------------------------
+      // RENDER TICKER CARD
+      // -------------------------------------------------------------
+      function renderCropCard(cropIdx, withAnimation = true) {
+        const crop = cropDatasets[cropIdx];
+        if (!crop) return;
+        const dict = translations[currentLang] || translations.en;
+
+        if (withAnimation && tickerBody) {
+          tickerBody.classList.add('fade-out');
+        }
+
+        setTimeout(() => {
+          // Update Tab States
+          cropTabButtons.forEach(btn => {
+            const isMatch = btn.getAttribute('data-crop') === crop.key;
+            btn.classList.toggle('active', isMatch);
+            btn.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+          });
+
+          // Emoji & Title
+          if (cardCropEmoji) cardCropEmoji.textContent = crop.emoji;
+          if (cardCropTitle) cardCropTitle.textContent = crop.titles[currentLang] || crop.titles.en;
+
+          // Net price & values
+          if (netPriceValue) netPriceValue.textContent = crop.netPrice;
+          if (mandiGrossValue) mandiGrossValue.textContent = crop.mandiPrice;
+          if (transportValue) transportValue.textContent = crop.transport;
+          if (storageValue) storageValue.textContent = crop.storage;
+          if (dayRangeValue) dayRangeValue.textContent = crop.range;
+          if (arrivalsValue) arrivalsValue.textContent = crop.arrivals[currentLang] || crop.arrivals.en;
+
+          // Trend badge
+          if (priceTrendBadge) {
+            priceTrendBadge.className = `price-trend-badge ${crop.trendDirection}`;
+            if (priceTrendArrow) priceTrendArrow.textContent = crop.trendDirection === 'up' ? '▲' : '▼';
+            if (priceTrendPercent) priceTrendPercent.textContent = crop.trendText;
+          }
+
+          // Verdict styling & text
+          if (verdictStatusBadge && verdictStatusText) {
+            verdictStatusBadge.className = `verdict-status status-${crop.verdictType}`;
+            if (crop.verdictType === 'sell') {
+              verdictStatusText.textContent = dict.verdictSell;
+            } else if (crop.verdictType === 'wait') {
+              verdictStatusText.textContent = dict.verdictWait;
+            } else {
+              verdictStatusText.textContent = dict.verdictHold;
+            }
+          }
+
+          if (withAnimation && tickerBody) {
+            tickerBody.classList.remove('fade-out');
+          }
+        }, withAnimation ? 120 : 0);
+      }
+
+      // Dynamic Relative Timestamp clock simulation
+      const timeLabels = ['updatedJustNow', 'updatedJustNow', 'updated1mAgo', 'updated2mAgo'];
+      let timeStep = 0;
+      function updateClockDisplay() {
+        if (!tickerClock) return;
+        const dict = translations[currentLang] || translations.en;
+        const key = timeLabels[timeStep % timeLabels.length];
+        tickerClock.textContent = dict[key] || dict.updatedJustNow;
+      }
+      setInterval(() => {
+        timeStep++;
+        updateClockDisplay();
+      }, 9000);
+
+      // -------------------------------------------------------------
+      // AUTO-CYCLE LOGIC WITH PROGRESS BAR
+      // -------------------------------------------------------------
+      function resetProgress() {
+        progressElapsed = 0;
+        if (tickerProgressBar) tickerProgressBar.style.width = '0%';
+      }
+
+      function startAutoCycle() {
+        stopAutoCycle();
+        resetProgress();
+
+        progressTimer = setInterval(() => {
+          progressElapsed += PROGRESS_STEP;
+          const pct = Math.min((progressElapsed / CYCLE_INTERVAL) * 100, 100);
+          if (tickerProgressBar) tickerProgressBar.style.width = `${pct}%`;
+
+          if (progressElapsed >= CYCLE_INTERVAL) {
+            progressElapsed = 0;
+            currentCropIndex = (currentCropIndex + 1) % cropDatasets.length;
+            renderCropCard(currentCropIndex, true);
+          }
+        }, PROGRESS_STEP);
+      }
+
+      function stopAutoCycle() {
+        if (progressTimer) clearInterval(progressTimer);
+        if (cycleTimer) clearTimeout(cycleTimer);
+      }
+
+      // Tab switch handler
+      cropTabButtons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+          currentCropIndex = index;
+          renderCropCard(currentCropIndex, true);
+          startAutoCycle(); // reset cycle on manual interaction
+        });
+      });
+
+      // Pause ticker on mouse hover or touch on verdict card
+      const verdictCardEl = document.querySelector('.verdict-card');
+      if (verdictCardEl) {
+        verdictCardEl.addEventListener('mouseenter', stopAutoCycle);
+        verdictCardEl.addEventListener('mouseleave', startAutoCycle);
+      }
+
+      // -------------------------------------------------------------
+      // APPLY TRANSLATIONS INSTANTLY
+      // -------------------------------------------------------------
+      function updateLanguage(lang) {
+        if (!translations[lang]) return;
+        currentLang = lang;
+        setStoredLanguage(lang);
+
+        // Update document lang attribute
+        document.documentElement.lang = lang;
+
+        const dict = translations[lang];
+
+        // Replace content for all elements with data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (dict[key] !== undefined) {
+            el.textContent = dict[key];
+          }
+        });
+
+        // Update active class on toggle buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+          const btnLang = btn.getAttribute('data-lang');
+          if (btnLang === lang) {
+            btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
+          } else {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-pressed', 'false');
+          }
+        });
+
+        // Re-render current card & relative timestamp with new language
+        renderCropCard(currentCropIndex, false);
+        updateClockDisplay();
+      }
+
+      // Bind Language Switcher Buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const selected = this.getAttribute('data-lang');
+          updateLanguage(selected);
+        });
+      });
+
+      // -------------------------------------------------------------
+      // ROLE PICKER INTERACTIVITY
+      // -------------------------------------------------------------
+      const roleCards = document.querySelectorAll('.role-card');
+      const continueBtn = document.getElementById('btnContinueRole');
+      const toastEl = document.getElementById('selectionToast');
+      let selectedRole = 'farmer';
+
+      roleCards.forEach(card => {
+        function activateCard() {
+          roleCards.forEach(c => {
+            c.classList.remove('selected');
+            c.setAttribute('aria-checked', 'false');
+          });
+          card.classList.add('selected');
+          card.setAttribute('aria-checked', 'true');
+          selectedRole = card.getAttribute('data-role');
+          toastEl.textContent = '';
+        }
+
+        card.addEventListener('click', activateCard);
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activateCard();
+          }
+        });
+      });
+
+      continueBtn.addEventListener('click', () => {
+        const dict = translations[currentLang] || translations.en;
+        let roleName = dict.roleFarmer;
+        if (selectedRole === 'buyer') roleName = dict.roleBuyer;
+        if (selectedRole === 'fpo') roleName = dict.roleFpo;
+
+        toastEl.textContent = `${dict.continueFeedback} ${roleName} ✓`;
+        toastEl.style.opacity = '1';
+        
+        // Brief pulse effect on button
+        continueBtn.style.transform = 'scale(0.97)';
+        setTimeout(() => {
+          continueBtn.style.transform = '';
+        }, 150);
+      });
+
+      // -------------------------------------------------------------
+      // INITIALIZATION
+      // -------------------------------------------------------------
+      updateLanguage(currentLang);
+      renderCropCard(0, false);
+      startAutoCycle();
+    })();
+  </script>
+</body></html>
