@@ -1,0 +1,15 @@
+{
+  "name": "krishisetu",
+  "version": "1.0.0",
+  "description": "KrishiSetu - Smart Agri-Market Intelligence & Price Discovery Platform for Farmers (SIH 2026)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Team Code Catalyst (ID 118692)",
+  "license": "ISC"
+}
