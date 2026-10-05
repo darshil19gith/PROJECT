@@ -367,25 +367,27 @@ const server = http.createServer(async (req, res) => {
   // FILE ROUTING & STATIC FILE SERVING
   // ------------------------------------------------------------------
 
-  let filePath = '';
-  if (pathname === '/' || pathname === '/index.html') {
-    filePath = path.join(__dirname, 'views', 'index.html');
-  } else if (pathname === '/login' || pathname === '/register') {
-    filePath = path.join(__dirname, 'views', 'login.html');
-  } else if (pathname === '/dashboard') {
-    filePath = path.join(__dirname, 'views', 'dashboard.html');
-  } else {
-    // Serve public assets or views
-    filePath = path.join(__dirname, pathname.startsWith('/public') ? pathname : path.join('views', pathname));
-  }
+ let filePath = '';
 
-  const ext = path.extname(filePath);
+if (pathname === '/' || pathname === '/index.html') {
+    filePath = path.join(__dirname, 'index.html');
+
+} else if (pathname === '/login' || pathname === '/register') {
+    filePath = path.join(__dirname, 'login.html');
+
+} else if (pathname === '/dashboard') {
+    filePath = path.join(__dirname, 'dashboard.html');
+
+} else {
+    const requestedPath = pathname.replace(/^\/+/, '');
+    filePath = path.join(__dirname, requestedPath);
+}
   const contentType = MIME_TYPES[ext] || 'text/html; charset=utf-8';
 
   fs.readFile(filePath, (err, content) => {
     if (err) {
       if (err.code === 'ENOENT') {
-        const notFoundPath = path.join(__dirname, 'views', '404.html');
+       const notFoundPath = path.join(__dirname, '404.html');
         fs.readFile(notFoundPath, (err404, content404) => {
           res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
           res.end(content404 || '<h1>404 Not Found - KrishiSetu</h1>');
