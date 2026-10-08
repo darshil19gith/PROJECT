@@ -64,7 +64,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-[#FAFAF7]">
+<body id="top" class="min-h-screen flex flex-col bg-[#FAFAF7]">
 
   <!-- React Mount Root -->
   <div id="root"></div>
@@ -72,7 +72,48 @@
   <!-- React Components Code -->
   <script type="text/babel">
     const { useState, useEffect } = React;
+ const API_BASE = 'https://krishisetu-caae.onrender.com';
 
+    // All frontend API calls go through the deployed backend.
+    // This prevents Vercel/static-host relative URLs such as /api/create-lot
+    // from incorrectly hitting the frontend host and returning 404.
+    const apiUrl = (path) => `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
+
+    const apiRequest = async (path, options = {}) => {
+      const response = await fetch(apiUrl(path), {
+        ...options,
+        headers: {
+          Accept: 'application/json',
+          ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+          ...(options.headers || {})
+        }
+      });
+
+      const contentType = response.headers.get('content-type') || '';
+      const raw = await response.text();
+      let data = null;
+
+      if (raw) {
+        if (contentType.includes('application/json')) {
+          try {
+            data = JSON.parse(raw);
+          } catch (_) {
+            throw new Error(`Backend returned invalid JSON (${response.status}).`);
+          }
+        } else {
+          throw new Error(`Backend returned ${response.status} ${response.statusText} instead of JSON.`);
+        }
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          (data && (data.message || data.error)) ||
+          `Request failed: ${response.status} ${response.statusText}`
+        );
+      }
+
+      return data || {};
+    };
     // Multilingual Translations Dictionary (EN, HI, MR)
     const dashboardI18n = {
       en: {
@@ -370,33 +411,41 @@
         speakText(msg, language);
       };
 
-      const fetchData = () => {
-        fetch('/api/market-data')
-          .then(res => res.json())
-          .then(data => {
-            setMarketPrices(data.prices || []);
-            setMandiComparisons(data.mandiComparisons || []);
-            setLogisticsDispatches(data.logisticsDispatches || []);
-          })
-          .catch(err => console.error(err));
+      const fetchData = async () => {
+        try {
+          const [marketData, lotData] = await Promise.all([
+            apiRequest('/api/market-data'),
+            apiRequest('/api/lots')
+          ]);
 
-        fetch('/api/lots')
-          .then(res => res.json())
-          .then(data => {
-            setLots(data.lots || []);
-            setOffers(data.offers || []);
-            setStorageBookings(data.storageBookings || []);
-            setQualityRequests(data.qualityRequests || []);
-          })
-          .catch(err => console.error(err));
+          setMarketPrices(marketData.prices || []);
+          setMandiComparisons(marketData.mandiComparisons || []);
+          setLogisticsDispatches(marketData.logisticsDispatches || []);
+
+          setLots(lotData.lots || []);
+          setOffers(lotData.offers || []);
+          setStorageBookings(lotData.storageBookings || []);
+          setQualityRequests(lotData.qualityRequests || []);
+        } catch (err) {
+          console.error('KrishiSetu data load error:', err);
+          showToast(`⚠️ Backend connection error: ${err.message}`);
+        }
       };
 
-      const fetchForecast = (cropName) => {
-        fetch(`/api/price-forecast?crop=${encodeURIComponent(cropName)}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) setForecastData(data.forecast);
-          });
+      const fetchForecast = async (cropName) => {
+        try {
+          const data = await apiRequest(
+            `/api/price-forecast?crop=${encodeURIComponent(cropName)}`
+          );
+          if (data.success) {
+            setForecastData(data.forecast || null);
+          } else {
+            throw new Error(data.message || 'Forecast API failed');
+          }
+        } catch (err) {
+          console.error('Forecast load error:', err);
+          setForecastData(null);
+        }
       };
 
       useEffect(() => {
@@ -411,20 +460,22 @@
       }, [selectedForecastCrop]);
 
       const handleConfirmDelivery = (dispatchId) => {
-        fetch('/api/confirm-delivery', {
+      apiRequest('/api/confirm-delivery', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ dispatchId })
         })
-        .then(res => res.json())
         .then(res => {
           if (res.success) {
             showToast('🎉 Proof of Delivery Confirmed! Escrow Payment Released.');
             setCompletedDispatchData(res.dispatch);
             setShowEndingCompletionModal(true);
             fetchData();
+          } else {
+            throw new Error(res.message || 'Unable to confirm delivery.');
           }
-        });
+        })
+        .catch(err => showToast(`❌ ${err.message}`));
       };
 
       const handleCreateLot = (e) => {
@@ -440,19 +491,21 @@
           location: form.location.value
         };
 
-        fetch('/api/create-lot', {
+        apiRequest('/api/create-lot', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         })
-        .then(res => res.json())
         .then(res => {
           if (res.success) {
             showToast('✅ Crop Lot successfully published to Buyer Network!');
             setShowCreateLotModal(false);
             fetchData();
+          } else {
+            throw new Error(res.message || 'Unable to create lot.');
           }
-        });
+        })
+        .catch(err => showToast(`❌ ${err.message}`));
       };
 
       const handleBookStorage = (e) => {
@@ -466,19 +519,21 @@
           durationDays: form.duration.value
         };
 
-        fetch('/api/storage-booking', {
+        apiRequest('/api/storage-booking', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         })
-        .then(res => res.json())
         .then(res => {
           if (res.success) {
             showToast('📦 Warehouse storage slot booked! Deposit receipt generated.');
             setShowStorageModal(false);
             fetchData();
+          } else {
+            throw new Error(res.message || 'Unable to book storage.');
           }
-        });
+        })
+        .catch(err => showToast(`❌ ${err.message}`));
       };
 
       const handleIssueQualityCert = (e) => {
@@ -494,19 +549,21 @@
           inspector: 'Krishi Quality Labs (Agmark Verified)'
         };
 
-        fetch('/api/quality-verify', {
+        apiRequest('/api/quality-verify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         })
-        .then(res => res.json())
         .then(res => {
           if (res.success) {
             showToast('🔬 Digital Quality Certificate generated with Cryptographic Hash!');
             setShowQualityCertModal(false);
             fetchData();
+          } else {
+            throw new Error(res.message || 'Unable to issue certificate.');
           }
-        });
+        })
+        .catch(err => showToast(`❌ ${err.message}`));
       };
 
       const handleMakeOffer = (e) => {
@@ -519,19 +576,21 @@
           qty: selectedLotForOffer.qty
         };
 
-        fetch('/api/make-offer', {
+        apiRequest('/api/make-offer', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         })
-        .then(res => res.json())
         .then(res => {
           if (res.success) {
             showToast('🤝 Purchase offer sent to farmer! Direct negotiation opened.');
             setShowOfferModal(false);
             fetchData();
+          } else {
+            throw new Error(res.message || 'Unable to submit offer.');
           }
-        });
+        })
+        .catch(err => showToast(`❌ ${err.message}`));
       };
 
       // DYNAMIC SVG CHART SCALE CALCULATOR
@@ -588,7 +647,7 @@
           <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-gray-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
               
-              <a href="/" class="flex items-center gap-3 text-2xl font-black text-agri-600 tracking-tight">
+              <a href="#top" class="flex items-center gap-3 text-2xl font-black text-agri-600 tracking-tight">
                 <span class="text-3xl">🌾</span>
                 <span>KrishiSetu</span>
               </a>
@@ -638,9 +697,9 @@
           {/* SYSTEM PIPELINE STEPPER BAR */}
           <div class="bg-gray-900 text-white py-3 border-b border-gray-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs font-bold overflow-x-auto gap-4">
-              <a href="/" class="hover:text-harvest-400 flex items-center gap-1 shrink-0">{t('step1')}</a>
+              <a href="#top" class="hover:text-harvest-400 flex items-center gap-1 shrink-0">{t('step1')}</a>
               <span class="text-gray-600">➔</span>
-              <a href="/login" class="hover:text-harvest-400 flex items-center gap-1 shrink-0">{t('step2')}</a>
+              <button type="button" onClick={() => showToast('✅ Onboarding & KYC is already completed for this demo account.')} class="hover:text-harvest-400 flex items-center gap-1 shrink-0">{t('step2')}</button>
               <span class="text-gray-600">➔</span>
               <span class="text-harvest-400 flex items-center gap-1 shrink-0">{t('step3')}</span>
               <span class="text-gray-600">➔</span>
@@ -827,7 +886,7 @@
                             </td>
                             <td class="p-4">
                               <button 
-                                onClick={() => { setSelectedCertForView(qualityRequests[0]); setShowCertViewerModal(true); }}
+                                onClick={() => { if (qualityRequests[0]) { setSelectedCertForView(qualityRequests[0]); setShowCertViewerModal(true); } else { showToast('ℹ️ No quality certificate is available yet.'); } }}
                                 class="text-xs font-black text-agri-600 hover:underline flex items-center gap-1"
                               >
                                 {t('viewCert')}
@@ -880,7 +939,7 @@
 
                         <div class="space-y-2 pt-2">
                           <button 
-                            onClick={() => { setSelectedCertForView(qualityRequests[0]); setShowCertViewerModal(true); }}
+                            onClick={() => { if (qualityRequests[0]) { setSelectedCertForView(qualityRequests[0]); setShowCertViewerModal(true); } else { showToast('ℹ️ No quality certificate is available yet.'); } }}
                             class="w-full bg-white border border-gray-300 hover:border-agri-600 text-gray-700 font-bold py-2 rounded-xl text-xs transition"
                           >
                             {t('inspectCertBtn')}
@@ -1126,7 +1185,7 @@
 
                 {/* Footer Navigation Buttons */}
                 <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                  <a href="/" class="flex-1 bg-gray-900 hover:bg-black text-white font-extrabold py-3.5 rounded-full text-center text-sm transition">
+                  <a href="#top" class="flex-1 bg-gray-900 hover:bg-black text-white font-extrabold py-3.5 rounded-full text-center text-sm transition">
                     {t('returnHomeBtn')}
                   </a>
                   <button onClick={() => setShowEndingCompletionModal(false)} class="flex-1 bg-agri-600 hover:bg-agri-700 text-white font-extrabold py-3.5 rounded-full text-center text-sm shadow transition">
