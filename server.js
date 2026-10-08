@@ -149,7 +149,23 @@ const server = http.createServer(async (req, res) => {
   // ------------------------------------------------------------------
   // REST API ENDPOINTS
   // ------------------------------------------------------------------
+// ------------------------------------------------------------------
 
+
+// Health check
+if (pathname === '/api/health' && method === 'GET') {
+  res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+  res.end(JSON.stringify({
+    success: true,
+    service: 'KrishiSetu API',
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  }));
+  return;
+}
+
+// 1. User Authentication / Login
+if (pathname === '/api/login' && method === 'POST') {
   // 1. User Authentication / Login
   if (pathname === '/api/login' && method === 'POST') {
     const data = await parseBody(req);
