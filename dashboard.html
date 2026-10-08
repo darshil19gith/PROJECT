@@ -41,7 +41,43 @@
       }
     }
   </script>
+<script>
+const API_BASE = "https://krishisetu-caae.onrender.com";
 
+async function apiFetch(path, options = {}) {
+    const response = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        }
+    });
+
+    const text = await response.text();
+
+    let data;
+
+    try {
+        data = JSON.parse(text);
+    } catch (error) {
+        console.error("Backend returned non-JSON:", text);
+
+        throw new Error(
+            `Backend returned ${response.status} instead of JSON.`
+        );
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            data.error ||
+            `Backend request failed (${response.status})`
+        );
+    }
+
+    return data;
+}
+</script>
   <!-- React 18 & Babel CDN for client-side rendering -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
